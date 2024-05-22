@@ -400,12 +400,14 @@ impl<N: Network, C: ConsensusStorage<N>> VM<N, C> {
         // First, insert the block.
         if let Err(insert_error) = self.block_store().insert(block) {
             if cfg!(feature = "rocks") {
+                info!("HIT A BLOCK INSERT ERROR, ABORTING ATOMIC WRITES");
                 // Clear all pending atomic operations so that unpausing the atomic writes
                 // doesn't execute any of the queued storage operations.
                 self.block_store().abort_atomic();
                 // Disable the atomic batch override.
                 // Note: This call is guaranteed to succeed (without error), because `DISCARD_BATCH == true`.
                 self.block_store().unpause_atomic_writes::<true>()?;
+                info!("UNPAUSED THE ATOMIC WRITES");
             }
 
             return Err(insert_error);
