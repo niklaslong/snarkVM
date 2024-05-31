@@ -13,6 +13,7 @@
 // limitations under the License.
 
 use super::*;
+use std::time::Instant;
 
 impl<N: Network> FromBytes for Block<N> {
     /// Reads the block from the buffer.
@@ -26,22 +27,37 @@ impl<N: Network> FromBytes for Block<N> {
         }
 
         // Read the block hash.
+        let now = Instant::now();
         let block_hash: N::BlockHash = FromBytes::read_le(&mut reader)?;
+        println!("BLOCKHASH: {:#?}", now.elapsed());
+
         // Read the previous block hash.
+        let now = Instant::now();
         let previous_hash = FromBytes::read_le(&mut reader)?;
+        println!("PREVIOUS BLOCK HASH: {:#?}", now.elapsed());
+
         // Read the header.
+        let now = Instant::now();
         let header = FromBytes::read_le(&mut reader)?;
+        println!("HEADER: {:#?}", now.elapsed());
 
         // Write the authority.
+        let now = Instant::now();
         let authority = FromBytes::read_le(&mut reader)?;
+        println!("AUTHORITY: {:#?}", now.elapsed());
 
         // Read the number of ratifications.
+        let now = Instant::now();
         let ratifications = Ratifications::read_le(&mut reader)?;
+        println!("RATIFICATIONS: {:#?}", now.elapsed());
 
         // Read the solutions.
+        let now = Instant::now();
         let solutions: Solutions<N> = FromBytes::read_le(&mut reader)?;
+        println!("SOLUTIONS: {:#?}", now.elapsed());
 
         // Read the number of aborted solution IDs.
+        let now = Instant::now();
         let num_aborted_solutions = u32::read_le(&mut reader)?;
         // Ensure the number of aborted solutions IDs is within bounds (this is an early safety check).
         if num_aborted_solutions as usize > Solutions::<N>::MAX_ABORTED_SOLUTIONS {
@@ -52,23 +68,30 @@ impl<N: Network> FromBytes for Block<N> {
         for _ in 0..num_aborted_solutions {
             aborted_solution_ids.push(FromBytes::read_le(&mut reader)?);
         }
+        println!("ABORTED SOLUTIONS: {:#?}", now.elapsed());
 
         // Read the transactions.
+        let now = Instant::now();
         let transactions = FromBytes::read_le(&mut reader)?;
+        println!("TRANSACTIONS: {:#?}", now.elapsed());
 
         // Read the number of aborted transaction IDs.
+        let now = Instant::now();
         let num_aborted_transactions = u32::read_le(&mut reader)?;
         // Ensure the number of aborted transaction IDs is within bounds (this is an early safety check).
         if num_aborted_transactions as usize > Transactions::<N>::MAX_ABORTED_TRANSACTIONS {
             return Err(error("Invalid number of aborted transaction IDs in the block"));
         }
         // Read the aborted transaction IDs.
+        let now = Instant::now();
         let mut aborted_transaction_ids = Vec::with_capacity(num_aborted_transactions as usize);
         for _ in 0..num_aborted_transactions {
             aborted_transaction_ids.push(FromBytes::read_le(&mut reader)?);
         }
+        println!("ABORTED TRANSACTIONS: {:#?}", now.elapsed());
 
         // Construct the block.
+        let now = Instant::now();
         let block = Self::from(
             previous_hash,
             header,
@@ -80,6 +103,7 @@ impl<N: Network> FromBytes for Block<N> {
             aborted_transaction_ids,
         )
         .map_err(error)?;
+        println!("BLOCK: {:#?}", now.elapsed());
 
         // Ensure the block hash matches.
         match block_hash == block.hash() {
