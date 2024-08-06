@@ -123,6 +123,18 @@ pub struct ProgramCore<N: Network, Instruction: InstructionTrait<N>, Command: Co
     functions: IndexMap<Identifier<N>, FunctionCore<N, Instruction, Command>>,
 }
 
+macro_rules! arbitrary_map {
+    ($u:expr, $k:ty, $v:ty) => {{
+        let mut map = IndexMap::new();
+        let iter = $u.arbitrary_iter::<($k, $v)>()?;
+        for elem_result in iter {
+            let (k, v) = elem_result?;
+            map.insert(k, v);
+        }
+        map
+    }};
+}
+
 impl<
     'a,
     N: Network + arbitrary::Arbitrary<'a>,
@@ -133,66 +145,12 @@ impl<
     fn arbitrary(u: &mut arbitrary::Unstructured<'a>) -> arbitrary::Result<Self> {
         let id = <ProgramID<N> as arbitrary::Arbitrary>::arbitrary(u)?;
         let imports = Default::default();
-
-        let identifiers = {
-            let mut identifiers = IndexMap::new();
-            let iter = u.arbitrary_iter::<(Identifier<N>, ProgramDefinition)>()?;
-            for elem_result in iter {
-                let (k, v) = elem_result?;
-                identifiers.insert(k, v);
-            }
-            identifiers
-        };
-
-        let mappings = {
-            let mut mappings = IndexMap::new();
-            let iter = u.arbitrary_iter::<(Identifier<N>, Mapping<N>)>()?;
-            for elem_result in iter {
-                let (k, v) = elem_result?;
-                mappings.insert(k, v);
-            }
-            mappings
-        };
-
-        let structs = {
-            let mut structs = IndexMap::new();
-            let iter = u.arbitrary_iter::<(Identifier<N>, StructType<N>)>()?;
-            for elem_result in iter {
-                let (k, v) = elem_result?;
-                structs.insert(k, v);
-            }
-            structs
-        };
-
-        let records = {
-            let mut records = IndexMap::new();
-            let iter = u.arbitrary_iter::<(Identifier<N>, RecordType<N>)>()?;
-            for elem_result in iter {
-                let (k, v) = elem_result?;
-                records.insert(k, v);
-            }
-            records
-        };
-
-        let closures = {
-            let mut closures = IndexMap::new();
-            let iter = u.arbitrary_iter::<(Identifier<N>, ClosureCore<N, Instruction>)>()?;
-            for elem_result in iter {
-                let (k, v) = elem_result?;
-                closures.insert(k, v);
-            }
-            closures
-        };
-
-        let functions = {
-            let mut functions = IndexMap::new();
-            let iter = u.arbitrary_iter::<(Identifier<N>, FunctionCore<N, Instruction, Command>)>()?;
-            for elem_result in iter {
-                let (k, v) = elem_result?;
-                functions.insert(k, v);
-            }
-            functions
-        };
+        let identifiers = arbitrary_map!(u, Identifier<N>, ProgramDefinition);
+        let mappings = arbitrary_map!(u, Identifier<N>, Mapping<N>);
+        let structs = arbitrary_map!(u, Identifier<N>, StructType<N>);
+        let records = arbitrary_map!(u, Identifier<N>, RecordType<N>);
+        let closures = arbitrary_map!(u, Identifier<N>, ClosureCore<N, Instruction>);
+        let functions = arbitrary_map!(u, Identifier<N>, FunctionCore<N, Instruction, Command>);
 
         Ok(Self { id, imports, identifiers, mappings, structs, records, closures, functions })
     }
