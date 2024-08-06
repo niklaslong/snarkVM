@@ -103,7 +103,7 @@ enum ProgramDefinition {
     Function,
 }
 
-#[derive(arbitrary::Arbitrary, Clone, PartialEq, Eq)]
+#[derive(Clone, PartialEq, Eq)]
 pub struct ProgramCore<N: Network, Instruction: InstructionTrait<N>, Command: CommandTrait<N>> {
     /// The ID of the program.
     id: ProgramID<N>,
@@ -121,6 +121,23 @@ pub struct ProgramCore<N: Network, Instruction: InstructionTrait<N>, Command: Co
     closures: IndexMap<Identifier<N>, ClosureCore<N, Instruction>>,
     /// A map of the declared functions for the program.
     functions: IndexMap<Identifier<N>, FunctionCore<N, Instruction, Command>>,
+}
+
+impl<'a, N: Network + arbitrary::Arbitrary<'a>, Instruction: InstructionTrait<N>, Command: CommandTrait<N>>
+    arbitrary::Arbitrary<'a> for ProgramCore<N, Instruction, Command>
+{
+    fn arbitrary(u: &mut arbitrary::Unstructured<'a>) -> arbitrary::Result<Self> {
+        let id = <ProgramID<N> as arbitrary::Arbitrary>::arbitrary(u)?;
+        let imports = Default::default();
+        let identifiers = Default::default();
+        let mappings = Default::default();
+        let structs = Default::default();
+        let records = Default::default();
+        let closures = Default::default();
+        let functions = Default::default();
+
+        Ok(Self { id, imports, identifiers, mappings, structs, records, closures, functions })
+    }
 }
 
 impl<N: Network, Instruction: InstructionTrait<N>, Command: CommandTrait<N>> ProgramCore<N, Instruction, Command> {
