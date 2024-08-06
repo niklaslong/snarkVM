@@ -35,7 +35,7 @@ use crate::address::Address;
 use snarkvm_console_network::prelude::*;
 use snarkvm_console_types::{Boolean, Field, Scalar};
 
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(arbitrary::Arbitrary, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct Signature<N: Network> {
     /// The verifier challenge to check against.
     challenge: Scalar<N>,

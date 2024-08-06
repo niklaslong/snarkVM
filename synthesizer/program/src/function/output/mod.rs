@@ -21,7 +21,7 @@ use console::{network::prelude::*, program::ValueType};
 
 /// An output statement defines an output of a function.
 ///  An output statement is of the form `output {operand} as {value_type};`.
-#[derive(Clone, PartialEq, Eq, Hash)]
+#[derive(arbitrary::Arbitrary, Clone, PartialEq, Eq, Hash)]
 pub struct Output<N: Network> {
     /// The output operand.
     operand: Operand<N>,

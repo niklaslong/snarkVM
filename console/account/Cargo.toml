@@ -21,6 +21,9 @@ version = "=0.16.19"
 default-features = false
 features = [ "address", "boolean", "field", "group", "scalar" ]
 
+[dependencies.arbitrary]
+version = "1"
+
 [dependencies.bs58]
 version = "0.5"
 

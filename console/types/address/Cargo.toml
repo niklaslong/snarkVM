@@ -22,6 +22,10 @@ version = "=0.16.19"
 path = "../group"
 version = "=0.16.19"
 
+[dependencies.arbitrary]
+version = "1"
+features = [ "derive" ]
+
 [dev-dependencies.bincode]
 version = "1.3"
 

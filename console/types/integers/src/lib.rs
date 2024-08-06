@@ -54,7 +54,7 @@ pub type U32<E> = Integer<E, u32>;
 pub type U64<E> = Integer<E, u64>;
 pub type U128<E> = Integer<E, u128>;
 
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(arbitrary::Arbitrary, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct Integer<E: Environment, I: IntegerType> {
     /// The underlying integer value.
     integer: I,

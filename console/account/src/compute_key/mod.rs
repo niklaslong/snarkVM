@@ -31,7 +31,7 @@ use snarkvm_console_types::{Address, Boolean, Field, Group, Scalar};
 
 static _COMPUTE_KEY_PREFIX: [u8; 10] = [109, 249, 98, 224, 36, 15, 213, 187, 79, 190]; // AComputeKey1
 
-#[derive(Copy, Clone, Debug, PartialEq, Eq, Hash)]
+#[derive(arbitrary::Arbitrary, Copy, Clone, Debug, PartialEq, Eq, Hash)]
 pub struct ComputeKey<N: Network> {
     /// The signature public key `pk_sig` := G^sk_sig.
     pk_sig: Group<N>,

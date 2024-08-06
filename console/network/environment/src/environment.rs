@@ -44,8 +44,9 @@ pub trait Environment:
         + Zeroize
         + for<'a> arbitrary::Arbitrary<'a>;
     type PairingCurve: PairingEngine<Fr = Self::Field>;
-    type Projective: ProjectiveCurve<Affine = Self::Affine, BaseField = Self::Field, ScalarField = Self::Scalar>;
-    type Scalar: PrimeField<BigInteger = Self::BigInteger> + Copy + Zeroize;
+    type Projective: ProjectiveCurve<Affine = Self::Affine, BaseField = Self::Field, ScalarField = Self::Scalar>
+        + for<'a> arbitrary::Arbitrary<'a>;
+    type Scalar: PrimeField<BigInteger = Self::BigInteger> + Copy + Zeroize + for<'a> arbitrary::Arbitrary<'a>;
 
     /// The coefficient `A` of the twisted Edwards curve.
     const EDWARDS_A: Self::Field;

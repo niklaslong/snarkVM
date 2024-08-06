@@ -18,6 +18,10 @@ version = "=0.16.19"
 path = "../field"
 version = "=0.16.19"
 
+[dependencies.arbitrary]
+version = "1"
+features = [ "derive" ]
+
 [dependencies.zeroize]
 version = "1"
 features = [ "derive" ]

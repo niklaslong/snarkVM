@@ -20,7 +20,7 @@ use crate::Access;
 use snarkvm_console_network::prelude::*;
 
 /// A register contains the location data to a value in memory.
-#[derive(Clone, PartialEq, Eq, Hash)]
+#[derive(arbitrary::Arbitrary, Clone, PartialEq, Eq, Hash)]
 pub enum Register<N: Network> {
     /// A register contains its locator in memory.
     Locator(u64),

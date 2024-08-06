@@ -22,7 +22,7 @@ use snarkvm_console_network::prelude::*;
 use snarkvm_console_types::Field;
 
 /// A locator is of the form `{program_id}/{resource}` (i.e. `howard.aleo/notify`).
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(arbitrary::Arbitrary, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct Locator<N: Network> {
     /// The program ID.
     id: ProgramID<N>,

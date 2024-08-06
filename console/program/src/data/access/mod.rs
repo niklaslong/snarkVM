@@ -20,7 +20,7 @@ use crate::{Identifier, U32};
 use snarkvm_console_network::prelude::*;
 
 /// A helper type for accessing an entry in a register, struct, array, or record.
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(arbitrary::Arbitrary, Copy, Clone, PartialEq, Eq, Hash)]
 pub enum Access<N: Network> {
     /// Access a member of a register, struct, or record.
     Member(Identifier<N>),

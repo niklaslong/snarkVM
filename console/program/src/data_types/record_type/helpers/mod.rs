@@ -15,7 +15,7 @@
 use snarkvm_console_network::prelude::*;
 
 /// A helper enum for the visibility of an entry.
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(arbitrary::Arbitrary, Copy, Clone, PartialEq, Eq, Hash)]
 pub enum PublicOrPrivate {
     Public,
     Private,

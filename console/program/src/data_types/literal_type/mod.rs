@@ -27,7 +27,7 @@ use enum_iterator::Sequence;
 use num_derive::FromPrimitive;
 use num_traits::FromPrimitive;
 
-#[derive(Copy, Clone, PartialEq, Eq, Hash, FromPrimitive, Sequence)]
+#[derive(arbitrary::Arbitrary, Copy, Clone, PartialEq, Eq, Hash, FromPrimitive, Sequence)]
 pub enum LiteralType {
     /// The Aleo address type.
     Address,

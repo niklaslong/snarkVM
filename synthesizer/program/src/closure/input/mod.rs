@@ -22,7 +22,7 @@ use console::{
 
 /// An input statement defines an input argument to a function, and is of the form
 /// `input {register} as {register_type}`.
-#[derive(Clone, PartialEq, Eq, Hash)]
+#[derive(arbitrary::Arbitrary, Clone, PartialEq, Eq, Hash)]
 pub struct Input<N: Network> {
     /// The input register.
     register: Register<N>,

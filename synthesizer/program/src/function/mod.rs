@@ -47,6 +47,43 @@ pub struct FunctionCore<N: Network, Instruction: InstructionTrait<N>, Command: C
     finalize_logic: Option<FinalizeCore<N, Command>>,
 }
 
+impl<
+    'a,
+    N: Network + arbitrary::Arbitrary<'a>,
+    Instruction: InstructionTrait<N> + arbitrary::Arbitrary<'a>,
+    Command: CommandTrait<N>,
+> arbitrary::Arbitrary<'a> for FunctionCore<N, Instruction, Command>
+{
+    fn arbitrary(u: &mut arbitrary::Unstructured<'a>) -> arbitrary::Result<Self> {
+        let name = <Identifier<N> as arbitrary::Arbitrary>::arbitrary(u)?;
+
+        let inputs = {
+            let mut inputs = IndexSet::new();
+            let iter = u.arbitrary_iter::<Input<N>>()?;
+            for elem_result in iter {
+                let elem = elem_result?;
+                inputs.insert(elem);
+            }
+            inputs
+        };
+
+        let instructions = <Vec<Instruction> as arbitrary::Arbitrary>::arbitrary(u)?;
+
+        let outputs = {
+            let mut outputs = IndexSet::new();
+            let iter = u.arbitrary_iter::<Output<N>>()?;
+            for elem_result in iter {
+                let elem = elem_result?;
+                outputs.insert(elem);
+            }
+            outputs
+        };
+
+        // TODO (nkls): include finalize logic?
+        Ok(Self { name, inputs, instructions, outputs, finalize_logic: None })
+    }
+}
+
 impl<N: Network, Instruction: InstructionTrait<N>, Command: CommandTrait<N>> FunctionCore<N, Instruction, Command> {
     /// Initializes a new function with the given name.
     pub fn new(name: Identifier<N>) -> Self {

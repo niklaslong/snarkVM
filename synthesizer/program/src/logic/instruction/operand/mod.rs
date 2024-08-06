@@ -23,7 +23,7 @@ use console::{
 
 /// The `Operand` enum represents the options for an operand in an instruction.
 /// This enum is designed to for instructions such as `add {Register} {Literal} into {Register}`.
-#[derive(Clone, PartialEq, Eq, Hash)]
+#[derive(arbitrary::Arbitrary, Clone, PartialEq, Eq, Hash)]
 pub enum Operand<N: Network> {
     /// The operand is a literal.
     Literal(Literal<N>),

@@ -23,7 +23,7 @@ mod parse;
 
 use console::{network::prelude::*, program::Identifier};
 
-#[derive(Clone, PartialEq, Eq)]
+#[derive(arbitrary::Arbitrary, Clone, PartialEq, Eq)]
 pub struct Mapping<N: Network> {
     /// The name of the mapping.
     name: Identifier<N>,

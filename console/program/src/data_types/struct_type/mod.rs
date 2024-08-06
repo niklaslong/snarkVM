@@ -29,6 +29,20 @@ pub struct StructType<N: Network> {
     members: IndexMap<Identifier<N>, PlaintextType<N>>,
 }
 
+impl<'a, N: Network + arbitrary::Arbitrary<'a>> arbitrary::Arbitrary<'a> for StructType<N> {
+    fn arbitrary(u: &mut arbitrary::Unstructured<'a>) -> arbitrary::Result<Self> {
+        let name = <Identifier<N> as arbitrary::Arbitrary>::arbitrary(u)?;
+        let mut members = IndexMap::new();
+        let iter = u.arbitrary_iter::<(Identifier<N>, PlaintextType<N>)>()?;
+        for elem_result in iter {
+            let (k, v) = elem_result?;
+            members.insert(k, v);
+        }
+
+        Ok(Self { name, members })
+    }
+}
+
 impl<N: Network> StructType<N> {
     /// Returns the name of the struct type.
     #[inline]

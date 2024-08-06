@@ -22,7 +22,7 @@ use snarkvm_console_network::prelude::*;
 use core::fmt::{Debug, Display};
 
 /// An `ArrayType` defines the type and size of an array.
-#[derive(Clone, PartialEq, Eq, Hash)]
+#[derive(arbitrary::Arbitrary, Clone, PartialEq, Eq, Hash)]
 pub struct ArrayType<N: Network> {
     /// The element type.
     element_type: Box<PlaintextType<N>>,

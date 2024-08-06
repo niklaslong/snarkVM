@@ -21,7 +21,7 @@ use console::{network::prelude::*, program::RegisterType};
 
 /// An output statement defines an output of a closure.
 /// An output statement is of the form `output {operand} as {register_type};`.
-#[derive(Clone, PartialEq, Eq, Hash)]
+#[derive(arbitrary::Arbitrary, Clone, PartialEq, Eq, Hash)]
 pub struct Output<N: Network> {
     /// The output operand.
     operand: Operand<N>,

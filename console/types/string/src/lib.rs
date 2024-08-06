@@ -28,7 +28,7 @@ pub use snarkvm_console_types_integers::Integer;
 
 use core::marker::PhantomData;
 
-#[derive(Clone, PartialEq, Eq, Hash)]
+#[derive(arbitrary::Arbitrary, Clone, PartialEq, Eq, Hash)]
 pub struct StringType<E: Environment> {
     /// The underlying string.
     string: String,

@@ -42,6 +42,38 @@ pub struct ClosureCore<N: Network, Instruction: InstructionTrait<N>> {
     outputs: IndexSet<Output<N>>,
 }
 
+impl<'a, N: Network + arbitrary::Arbitrary<'a>, Instruction: InstructionTrait<N> + arbitrary::Arbitrary<'a>>
+    arbitrary::Arbitrary<'a> for ClosureCore<N, Instruction>
+{
+    fn arbitrary(u: &mut arbitrary::Unstructured<'a>) -> arbitrary::Result<Self> {
+        let name = <Identifier<N> as arbitrary::Arbitrary>::arbitrary(u)?;
+
+        let inputs = {
+            let mut inputs = IndexSet::new();
+            let iter = u.arbitrary_iter::<Input<N>>()?;
+            for elem_result in iter {
+                let elem = elem_result?;
+                inputs.insert(elem);
+            }
+            inputs
+        };
+
+        let instructions = <Vec<Instruction> as arbitrary::Arbitrary>::arbitrary(u)?;
+
+        let outputs = {
+            let mut outputs = IndexSet::new();
+            let iter = u.arbitrary_iter::<Output<N>>()?;
+            for elem_result in iter {
+                let elem = elem_result?;
+                outputs.insert(elem);
+            }
+            outputs
+        };
+
+        Ok(Self { name, inputs, instructions, outputs })
+    }
+}
+
 impl<N: Network, Instruction: InstructionTrait<N>> ClosureCore<N, Instruction> {
     /// Initializes a new closure with the given name.
     pub fn new(name: Identifier<N>) -> Self {

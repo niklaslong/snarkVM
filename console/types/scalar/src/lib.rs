@@ -38,7 +38,7 @@ pub use snarkvm_console_types_field::Field;
 
 use zeroize::Zeroize;
 
-#[derive(Copy, Clone, PartialEq, Eq, Hash, Zeroize)]
+#[derive(arbitrary::Arbitrary, Copy, Clone, PartialEq, Eq, Hash, Zeroize)]
 pub struct Scalar<E: Environment> {
     /// The underlying scalar element.
     scalar: E::Scalar,
