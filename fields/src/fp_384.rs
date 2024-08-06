@@ -47,7 +47,7 @@ use zeroize::Zeroize;
 
 pub trait Fp384Parameters: FieldParameters<BigInteger = BigInteger> {}
 
-#[derive(Copy, Clone, Default, PartialEq, Eq, Hash, Zeroize)]
+#[derive(arbitrary::Arbitrary, Copy, Clone, Default, PartialEq, Eq, Hash, Zeroize)]
 pub struct Fp384<P: Fp384Parameters>(pub BigInteger, #[doc(hidden)] pub PhantomData<P>);
 
 impl<P: Fp384Parameters> Fp384<P> {

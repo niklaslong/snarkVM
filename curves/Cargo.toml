@@ -44,6 +44,9 @@ path = "../utilities"
 version = "=0.16.19"
 default-features = false
 
+[dependencies.arbitrary]
+version = "1"
+
 [dependencies.rand]
 version = "0.8"
 default-features = false

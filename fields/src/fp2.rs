@@ -37,7 +37,7 @@ use std::{
 pub trait Fp2Parameters:
     'static + Copy + Clone + Default + Debug + PartialEq + Eq + Hash + Serialize + for<'a> Deserialize<'a> + Send + Sync
 {
-    type Fp: PrimeField;
+    type Fp: PrimeField + for<'a> arbitrary::Arbitrary<'a>;
 
     /// Coefficients for the Frobenius automorphism.
     const FROBENIUS_COEFF_FP2_C1: [Self::Fp; 2];
@@ -52,7 +52,7 @@ pub trait Fp2Parameters:
     }
 }
 
-#[derive(Copy, Clone, Debug, Default, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[derive(arbitrary::Arbitrary, Copy, Clone, Debug, Default, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub struct Fp2<P: Fp2Parameters> {
     pub c0: P::Fp,
     pub c1: P::Fp,

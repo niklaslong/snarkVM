@@ -59,7 +59,7 @@ pub trait ProjectiveCurve:
     + From<<Self as ProjectiveCurve>::Affine>
 {
     type Affine: AffineCurve<Projective = Self, ScalarField = Self::ScalarField> + From<Self> + Into<Self>;
-    type BaseField: Field;
+    type BaseField: Field + for<'a> arbitrary::Arbitrary<'a>;
     type ScalarField: PrimeField + SquareRootField + Into<<Self::ScalarField as PrimeField>::BigInteger>;
 
     /// Returns a fixed generator of unknown exponent.
@@ -139,7 +139,7 @@ pub trait AffineCurve:
     + Zero
 {
     type Projective: ProjectiveCurve<Affine = Self, ScalarField = Self::ScalarField> + From<Self> + Into<Self>;
-    type BaseField: Field + SquareRootField;
+    type BaseField: Field + SquareRootField + for<'a> arbitrary::Arbitrary<'a>;
     type ScalarField: PrimeField + SquareRootField + Into<<Self::ScalarField as PrimeField>::BigInteger>;
     type Coordinates;
 
@@ -263,7 +263,7 @@ pub trait PairingCurve: AffineCurve {
 }
 
 pub trait ModelParameters: 'static + Copy + Clone + Debug + PartialEq + Eq + Hash + Send + Sync + Sized {
-    type BaseField: Field + SquareRootField;
+    type BaseField: Field + SquareRootField + for<'a> arbitrary::Arbitrary<'a>;
     type ScalarField: PrimeField + SquareRootField + Into<<Self::ScalarField as PrimeField>::BigInteger>;
 }
 

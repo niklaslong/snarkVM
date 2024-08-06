@@ -34,7 +34,7 @@ use snarkvm_console_types::{prelude::*, Field};
 /// The identifier must be alphanumeric, and may include underscores.
 /// The identifier must not consist solely of underscores.
 /// The identifier must fit within the data capacity of a base field element.
-#[derive(Copy, Clone)]
+#[derive(arbitrary::Arbitrary, Copy, Clone)]
 pub struct Identifier<N: Network>(Field<N>, u8); // Number of bytes in the identifier.
 
 impl<N: Network> From<&Identifier<N>> for Identifier<N> {

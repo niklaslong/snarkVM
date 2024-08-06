@@ -31,7 +31,7 @@ use rand::{
 };
 use zeroize::Zeroize;
 
-#[derive(Copy, Clone, PartialEq, Eq, Default, Hash, Zeroize)]
+#[derive(arbitrary::Arbitrary, Copy, Clone, PartialEq, Eq, Default, Hash, Zeroize)]
 pub struct BigInteger384(pub [u64; 6]);
 
 impl BigInteger384 {

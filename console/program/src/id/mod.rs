@@ -29,7 +29,7 @@ fn is_lowercase_alphanumeric(s: &str) -> bool {
 }
 
 /// A program ID is of the form `{name}.{network}`.
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(arbitrary::Arbitrary, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct ProgramID<N: Network> {
     /// The program name.
     name: Identifier<N>,
