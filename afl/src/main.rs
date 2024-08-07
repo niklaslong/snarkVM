@@ -12,22 +12,30 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use snarkvm::prelude::{MainnetV0 as CurrentNetwork, Program};
+use snarkvm::prelude::{MainnetV0 as CurrentNetwork, PrivateKey, Process, Program, TestRng, Value};
 
 use afl;
 
-fn main() {
-    afl::fuzz!(|program: Program<CurrentNetwork>| {
-        // // Initialize the VM.
-        // if let Ok(vm) = VM::<CurrentNetwork>::new() {
-        //     // Initialize the RNG.
-        //     let rng = &mut test_crypto_rng();
+type CurrentAleo = snarkvm::circuit::network::AleoV0;
 
-        //     // Deploy.
-        //     if let Ok(transaction) = vm.deploy(&program, rng) {
-        //         // Verify.
-        //         vm.verify(&transaction);
-        //     }
-        // }
+fn main() {
+    let rng = &mut TestRng::fixed(7777777);
+    let private_key = PrivateKey::<CurrentNetwork>::new(rng).unwrap();
+
+    afl::fuzz!(|program_inputs: (Program<CurrentNetwork>, Vec<Value<CurrentNetwork>>)| {
+        let (program, inputs) = program_inputs;
+
+        let Some(function_name) = program.functions().values().next().map(|foo| foo.name()) else {
+            return;
+        };
+
+        let mut process = Process::load().unwrap();
+        process.add_program(&program).unwrap();
+
+        let authorization = process
+            .authorize::<CurrentAleo, _>(&private_key, program.id(), function_name, inputs.into_iter(), rng)
+            .unwrap();
+
+        let (_, mut trace) = process.execute::<CurrentAleo, _>(authorization, rng).unwrap();
     });
 }
