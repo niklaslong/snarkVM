@@ -9,9 +9,11 @@
     ["<mapping>"],
     ["<struct>"],
     ["<record>"],
-    ["<closure>"]
+    ["<closure>"],
+    ["<function>"]
   ],
 
+  "<label>": [["<identifier>"]],
   "<locator-or-identifier>": [["<locator>"], ["<identifier>"]],
   "<locator>": [["<program-id>", "/", "<identifier>"]],
   "<identifier>": [["<letter>", "<identifier-suffix>"]],
@@ -74,13 +76,124 @@
       "<ws>", "as", "<ws>", "<register-type>", "<ws>", ";"
     ]
   ],
-  "<one-or-more-closure-inputs>": [["<closure-input>", "<closure-input>"]],
+  "<one-or-more-closure-inputs>": [
+    ["<closure-input>"],
+    ["<one-or-more-closure-inputs>", "<one-or-more-closure-inputs>"]
+  ],
   "<closure-output>": [
     ["<ws>", "output", "<ws>", "<operand>",
       "<ws>", "as", "<ws>", "<register-type>", "<ws>", ";"
     ]
   ],
-  "<one-or-more-closure-outputs>": [["<closure-output>", "<closure-output>"]],
+  "<one-or-more-closure-outputs>": [
+    ["<closure-output>"],
+    ["<one-or-more-closure-outputs>", "<one-or-more-closure-outputs>"]
+  ],
+
+  "<function>": [
+    ["<function-inner>"],
+    ["<function-inner>", "<finalize>"]
+  ],
+  "<function-inner>": [
+    ["<ws>", "function", "<ws>", "<identifier>", "<ws>", ":",
+      "<one-or-more-function-inputs>",
+      "<one-or-more-instructions>",
+      "<one-or-more-function-outputs>"
+    ]
+  ],
+  "<function-input>": [
+    ["<ws>", "input", "<ws>", "<register>",
+      "<ws>", "as", "<ws>", "<value-type>", "<ws>", ";"
+    ]
+  ],
+  "<one-or-more-function-inputs>": [
+    ["<function-input>"],
+    ["<one-or-more-function-inputs>", "<one-or-more-function-inputs>"]
+  ],
+  "<function-output>": [
+    ["<ws>", "output", "<ws>", "<operand>",
+      "<ws>", "as", "<ws>", "<value-type>", "<ws>", ";"
+    ]
+  ],
+  "<one-or-more-function-outputs>": [
+    ["<function-output>"],
+    ["<one-or-more-function-outputs>", "<one-or-more-function-outputs>"]
+  ],
+
+  "<finalize>": [
+    ["<ws>", "finalize", "<ws>", "<identifier>", "<ws>", ":",
+      "<one-or-more-finalize-inputs>",
+      "<one-or-more-commands>",
+    ]
+  ],
+  "<one-or-more-finalize-inputs>": [
+    ["<finalize-input>"],
+    ["<one-or-more-finalize-inputs>", "<one-or-more-finalize-inputs>" ]
+  ],
+  "<finalize-input>": [
+    ["<ws>", "input", "<ws>", "<register>",
+      "<ws>", "as", "<finalize-type>", "<ws>", ";"
+    ]
+  ],
+  "<one-or-more-commands>": [
+    ["<command>"],
+    ["<one-or-more-commands>", "<one-or-more-commands>"]
+  ],
+  "<command>": [
+    ["<contains>"],
+    ["<get>"],
+    ["<get-or-use>"],
+    ["<set>"],
+    ["<remove>"],
+    ["<random>"],
+    ["<position>"],
+    ["<branch>"],
+    ["<await>"],
+    ["<instruction>"]
+  ],
+
+  "<contains>": [
+    ["<ws>", "contains",
+      "<ws>", "<identifier>", "[", "<ws>", "<operand>", "<ws>", "]",
+      "<ws>", "into", "<ws>", "<register-access>", "<ws>", ";"
+    ]
+  ],
+  "<get>": [
+    ["<ws>", "get",
+      "<ws>", "<identifier>", "[", "<ws>", "<operand>", "<ws>", "]",
+      "<ws>", "into", "<ws>", "<register-access>", "<ws>", ";"
+    ]
+  ],
+  "<get-or-use>": [
+    ["<ws>", "get.or_use",
+      "<ws>", "<identifier>", "[", "<ws>", "<operand>", "<ws>", "]",
+      "<ws>", "<operand>",
+      "<ws>", "into", "<ws>", "<register-access>", "<ws>", ";"
+    ]
+  ],
+  "<set>": [
+    ["<ws>", "set",
+      "<ws>", "<operand>",
+      "<ws>", "<identifier>", "[", "<ws>", "<operand>", "<ws>", "]",
+    ]
+  ],
+  "<remove>": [
+    ["<ws>", "remove",
+      "<ws>", "<identifier>", "[", "<ws>", "<operand>", "<ws>", "]",
+    ]
+  ],
+  "<random>": [
+    ["<ws>", "rand.chacha",
+      "<ws>", "<operand>", "<ws>", "<operand>",
+      "<ws>", "into", "<ws>", "<register-access>", 
+      "<ws>", "as", "<ws>",
+      "<random-output-type>",
+      "<ws>", ";"
+    ]
+  ],
+  "<position>": [["<ws>", "position", "<ws>", "<label>", "<ws>", ";"]],
+  "<branch>": [["<ws>", "<branch-op>", "<ws>", "<operand>", "<ws>", "<operand>", "<ws>", "to", "<ws>", "<label>", "<ws>", ";"]],
+  "<await>": [["<ws>", "await", "<ws>", "<register-access>", "<ws>", ";"]],
 
   "<instruction>": [
     ["<ws>", "<unary>", "<ws>", ";"],
@@ -206,6 +319,7 @@
     ["hash_many.psd", "8"]
   ],
   "<cast-op>": [["cast"], ["cast.lossy"]],
+  "<branch-op>": [["branch.eq"], ["branch.neq"]],
 
   "<cast-destination>": [
     ["<plaintext-type>"],
@@ -242,6 +356,18 @@
     ["<locator>", ".record"],
     ["<identifier>", ".record"],
     ["<plaintext-type>"]
+  ],
+  "<value-type>": [
+    ["<plaintext-type>", ".constant"],
+    ["<plaintext-type>", ".public"],
+    ["<plaintext-type>", ".private"],
+    ["<identifier>", ".record"],
+    ["<locator>", ".record"],
+    ["<locator>", ".future"]
+  ],
+  "<finalize-type>": [
+    ["<plaintext-type>", ".public"],
+    ["<locator>", ".future"]
   ],
   "<mapping-type>": [["<plaintext-type>", ".public"]],
   "<entry-type>": [
@@ -287,6 +413,12 @@
     ["<signature-type>"], 
     ["<array-type>"], 
     ["<identifier>"]
+  ],
+  "<random-output-type>": [
+    ["<arithmetic-type>"],
+    ["<address-type>"],
+    ["<signature-type>"],
+    ["<boolean-type>"]
   ],
 
   "<literal>": [
