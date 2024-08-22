@@ -25,6 +25,7 @@ edition = "2021"
 
 [features]
 default = [ "process", "program", "rayon", "snark" ]
+fuzzing = [  "synthesizer-process/fuzzing" ]
 process = [ "synthesizer-process" ]
 program = [ "synthesizer-program" ]
 snark = [ "synthesizer-snark" ]

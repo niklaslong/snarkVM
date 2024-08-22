@@ -1,0 +1,15 @@
+[package]
+name = "afl"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+afl = "0.15"
+
+[dependencies.snarkvm]
+path = ".."
+features = ["fuzzing"]
+
+[workspace]
+members = ["."]
+

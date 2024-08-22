@@ -1,0 +1,13 @@
+program f.aleo;
+
+closure c:
+ input r0 as field;
+ input r1 as field;
+ mul r0 r1 into r2;
+ output r2 as field;
+
+function f:
+ input r0 as field.public;
+ input r1 as field.public;
+ call c r0 r1 into r2;
+ output r2 as field.public;
