@@ -30,32 +30,32 @@
   "<record>": [
     ["\nrecord ", "<identifier>", ":\n",
       " owner as ", "<public-or-private-address>", ";\n",
-      "<one-or-more-entries>"
+      "<zero-or-more-entries>"
     ]
   ],
   "<public-or-private-address>": [["address.public"], ["address.private"]],
-  "<one-or-more-entries>": [
-    ["<entry>"],
-    ["<entry>", "<one-or-more-entries>"]
+  "<zero-or-more-entries>": [
+    [],
+    ["<entry>", "<zero-or-more-entries>"]
   ],
   "<entry>": [[" ", "<identifier>", " as ", "<entry-type>", ";\n"]],
 
   "<closure>": [
     ["\nclosure ", "<identifier>", ":\n",
-      "<one-or-more-closure-inputs>",
+      "<zero-or-more-closure-inputs>",
       "<one-or-more-instructions>",
-      "<one-or-more-closure-outputs>"
+      "<zero-or-more-closure-outputs>"
     ]
   ],
   "<closure-input>": [[" input ", "<register>", " as ", "<register-type>", ";\n"]],
-  "<one-or-more-closure-inputs>": [
-    ["<closure-input>"],
-    ["<closure-input>", "<one-or-more-closure-inputs>"]
+  "<zero-or-more-closure-inputs>": [
+    [],
+    ["<closure-input>", "<zero-or-more-closure-inputs>"]
   ],
   "<closure-output>": [[" output ", "<operand>", " as ", "<register-type>", ";\n"]],
-  "<one-or-more-closure-outputs>": [
-    ["<closure-output>"],
-    ["<closure-output>", "<one-or-more-closure-outputs>"]
+  "<zero-or-more-closure-outputs>": [
+    [],
+    ["<closure-output>", "<zero-or-more-closure-outputs>"]
   ],
 
   "<function>": [
@@ -64,31 +64,31 @@
   ],
   "<function-inner>": [
     ["\nfunction ", "<identifier>", ":\n",
-      "<one-or-more-function-inputs>",
-      "<one-or-more-instructions>",
-      "<one-or-more-function-outputs>"
+      "<zero-or-more-function-inputs>",
+      "<zero-or-more-instructions>",
+      "<zero-or-more-function-outputs>"
     ]
   ],
   "<function-input>": [[" input ", "<register>", " as ", "<value-type>", ";\n"]],
-  "<one-or-more-function-inputs>": [
-    ["<function-input>"],
-    ["<function-input>", "<one-or-more-function-inputs>"]
+  "<zero-or-more-function-inputs>": [
+    [],
+    ["<function-input>", "<zero-or-more-function-inputs>"]
   ],
   "<function-output>": [[" output ", "<operand>", " as ", "<value-type>", ";\n"]],
-  "<one-or-more-function-outputs>": [
-    ["<function-output>"],
-    ["<function-output>", "<one-or-more-function-outputs>"]
+  "<zero-or-more-function-outputs>": [
+    [],
+    ["<function-output>", "<zero-or-more-function-outputs>"]
   ],
 
   "<finalize>": [
     ["\nfinalize ", "<identifier>", ":\n",
-      "<one-or-more-finalize-inputs>",
+      "<zero-or-more-finalize-inputs>",
       "<one-or-more-commands>"
     ]
   ],
-  "<one-or-more-finalize-inputs>": [
-    ["<finalize-input>"],
-    ["<finalize-input>", "<one-or-more-finalize-inputs>" ]
+  "<zero-or-more-finalize-inputs>": [
+    [],
+    ["<finalize-input>", "<zero-or-more-finalize-inputs>" ]
   ],
   "<finalize-input>": [[" input ", "<register>", " as ", "<finalize-type>", ";\n"]],
   "<one-or-more-commands>": [
@@ -138,9 +138,12 @@
     [" ", "<call>", ";\n"],
     [" ", "<async>", ";\n"]
   ],
+  "<zero-or-more-instructions>": [
+    [],
+    ["<one-or-more-instructions>"]
+  ],
   "<one-or-more-instructions>": [
-    ["<instruction>"],
-    ["<instruction>", "<one-or-more-instructions>"]
+    ["<instruction>", "<zero-or-more-instructions>"]
   ],
 
   "<unary>": [["<unary-op>", " ", "<operand>", " into ", "<register-access>"]],
@@ -178,12 +181,12 @@
     ]
   ],
   "<call>": [
-    ["call ", "<locator-or-identifier>", " ", "<one-or-more-operands>",
+    ["call ", "<locator-or-identifier>", " ", "<zero-or-more-operands>",
       " into ", "<register-access>"
     ]
   ],
   "<async>": [
-    ["async ", "<identifier>", " ", "<one-or-more-operands>",
+    ["async ", "<identifier>", " ", "<zero-or-more-operands>",
       " into ", "<register-access>"
   ]],
 
@@ -260,14 +263,14 @@
   ],
   
   "<register>": [["r", "<one-or-more-digits>"]],
-  "<register-access>": [["<register>", "<one-or-more-register-accessors>"]],
+  "<register-access>": [["<register>", "<zero-or-more-register-accessors>"]],
   "<register-accessor>": [
     [".", "<identifier>"],
     ["[", "<u32-literal>", "]"]
   ],
-  "<one-or-more-register-accessors>": [
-    ["<register-accessor>"],
-    ["<register-accessor>", "<one-or-more-register-accessors>"]
+  "<zero-or-more-register-accessors>": [
+    [],
+    ["<register-accessor>", "<zero-or-more-register-accessors>"]
   ],
   
   "<operand>": [
@@ -279,9 +282,12 @@
     ["self.caller"],
     ["block.height"]
   ],
+  "<zero-or-more-operands>": [
+    [],
+    ["<one-or-more-operands>"]
+  ],
   "<one-or-more-operands>": [
-    ["<operand>"],
-    ["<operand>", "<one-or-more-operands>"]
+    ["<operand>", "<zero-or-more-operands>"]
   ],
 
   "<register-type>": [
