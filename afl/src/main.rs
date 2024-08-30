@@ -12,12 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::str;
+use std::{
+    panic::AssertUnwindSafe,
+    str::{self, FromStr},
+};
 
-use snarkvm::prelude::{Address, MainnetV0 as CurrentNetwork, Parser, PrivateKey, Process, Program, TestRng, ValueType};
+use snarkvm::prelude::{Address, MainnetV0 as CurrentNetwork, PrivateKey, Process, Program, TestRng, ValueType};
 use snarkvm::synthesizer::program::StackProgram;
-
-use afl;
 
 type CurrentAleo = snarkvm::circuit::network::AleoV0;
 
@@ -27,6 +28,8 @@ fn main() {
     let private_key = PrivateKey::<CurrentNetwork>::new(rng).unwrap();
     let burner_private_key = PrivateKey::new(rng).unwrap();
     let burner_address = Address::try_from(&burner_private_key).unwrap();
+    // The way the Process is used in the fuzzer is unwind-safe.
+    let mut process = AssertUnwindSafe(Process::load().unwrap());
 
     afl::fuzz!(|input: &[u8]| {
         // Convert the input bytes to a string.
@@ -34,64 +37,62 @@ fn main() {
             return;
         };
 
-        // Parse the program string as an Aleo Program.
-        let Ok((leftovers, program)) = Program::<CurrentNetwork>::parse(&program_string) else {
+        // Parse the program string as an Aleo program.
+        let Ok(program) = Program::<CurrentNetwork>::from_str(&program_string) else {
             return;
         };
-
-        // Filter out programs that fail to fully parse.
-        // TODO: find out why this is possible
-        if !leftovers.is_empty() {
-            return;
-        }
 
         // At least a single function must be present.
         if program.functions().is_empty() {
             return;
         };
 
-        // Create a Process and introduce the Program.
-        let mut process = Process::load().unwrap();
-        if let Err(_) = process.add_program(&program) {
+        // Reset the process to its initial state.
+        process.reset();
+
+        // Attempt to introduce the input program.
+        if process.add_program(&program).is_err() {
             return;
-        };
+        }
 
-        // Process all the functions.
-        for function in program.functions().values() {
-            // Sample inputs applicable to the given functions.
-            let input_types = function.input_types();
-            let stack = process.get_stack(program.id()).unwrap();
-            let Ok(inputs) = input_types
-                .iter()
-                .map(|input_type| match input_type {
-                    ValueType::ExternalRecord(locator) => {
-                        // Retrieve the external stack.
-                        let stack = stack.get_external_stack(locator.program_id())?;
-                        // Sample the input.
-                        stack.sample_value(&burner_address, &ValueType::Record(*locator.resource()), rng)
-                    }
-                    _ => {
-                        stack.sample_value(&burner_address, &input_type, rng)
-                    }
-                })
-                .collect::<Result<Vec<_>, _>>() else
-            {
-                return;
-            };
+        if cfg!(any(feature = "authorize", feature = "full")) {
+            // Process all the functions.
+            for function in program.functions().values() {
+                // Sample inputs applicable to the given functions.
+                let input_types = function.input_types();
+                let stack = process.get_stack(program.id()).unwrap();
+                let Ok(inputs) = input_types
+                    .iter()
+                    .map(|input_type| match input_type {
+                        ValueType::ExternalRecord(locator) => {
+                            let stack = stack.get_external_stack(locator.program_id())?;
+                            stack.sample_value(&burner_address, &ValueType::Record(*locator.resource()), rng)
+                        }
+                        _ => {
+                            stack.sample_value(&burner_address, &input_type, rng)
+                        }
+                    })
+                    .collect::<Result<Vec<_>, _>>() else
+                {
+                    return;
+                };
 
-            // Attempt to authorize the function with its inputs.
-            let Ok(authorization) = process.authorize::<CurrentAleo, _>(
-                &private_key,
-                program.id(),
-                function.name(),
-                inputs.into_iter(),
-                rng,
-            ) else {
-                return;
-            };
+                // Attempt to authorize the function with its inputs.
+                let Ok(authorization) = process.authorize::<CurrentAleo, _>(
+                    &private_key,
+                    program.id(),
+                    function.name(),
+                    inputs.into_iter(),
+                    rng,
+                ) else {
+                    return;
+                };
 
-            // Attempt to execute the process (which will eventually fail due to lack of key synthesis).
-            let _ = process.execute::<CurrentAleo, _>(authorization, rng);
+                if cfg!(feature = "full") {
+                    // Attempt to execute the process (which will eventually fail due to lack of key synthesis).
+                    let _ = process.execute::<CurrentAleo, _>(authorization, rng);
+                }
+            }
         }
     });
 }

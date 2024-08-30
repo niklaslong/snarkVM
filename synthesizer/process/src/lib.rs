@@ -286,6 +286,12 @@ impl<N: Network> Process<N> {
         // Synthesize the proving and verifying key.
         self.get_stack(program_id)?.synthesize_key::<A, R>(function_name, rng)
     }
+
+    #[cfg(feature = "fuzzing")]
+    pub fn reset(&mut self) {
+        // Only leave the credits program stack.
+        self.stacks.truncate(1);
+    }
 }
 
 #[cfg(any(test, feature = "test"))]
