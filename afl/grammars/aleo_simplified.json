@@ -1,7 +1,7 @@
 {
   "<start>": [["<program>"]],
 
-  "<program>": [["program ", "<program-id>", ";\n", "<program-body>"]],
+  "<program>": [["program ", "<program-id>", ";\n", "<one-or-more-program-bodies>"]],
   "<program-id>": [["t.aleo"]],
   "<program-body>": [
     ["<mapping>"],
@@ -9,6 +9,10 @@
     ["<record>"],
     ["<closure>"],
     ["<function>"]
+  ],
+  "<one-or-more-program-bodies>": [
+    ["<program-body>"],
+    ["<program-body>", "<one-or-more-program-bodies>"]
   ],
 
   "<label>": [["<identifier>"]],
@@ -59,15 +63,16 @@
   ],
 
   "<function>": [
-    ["<function-inner>"],
-    ["<function-inner>", "<finalize>"]
-  ],
-  "<function-inner>": [
     ["\nfunction ", "<identifier>", ":\n",
       "<zero-or-more-function-inputs>",
       "<zero-or-more-instructions>",
-      "<zero-or-more-function-outputs>"
+      "<zero-or-more-function-outputs>",
+      "<optional-finalize>"
     ]
+  ],
+  "<optional-finalize>": [
+    [],
+    ["<finalize>"]
   ],
   "<function-input>": [[" input ", "<register>", " as ", "<value-type>", ";\n"]],
   "<zero-or-more-function-inputs>": [
@@ -170,25 +175,18 @@
       " as ", "<hash-output-type>"
     ]
   ],
-  "<signverify>": [
-    ["sign.verify", " ", "<operand>", " ", "<operand>", " ", "<operand>",
-      " into ", "<register-access>"
-    ]
-  ],
+  "<signverify>": [["sign.verify ", "<operand>", " ", "<operand>", " ", "<operand>", " into ", "<register-access>"]],
   "<cast>": [
     ["<cast-op>", " ", "<one-or-more-operands>",
       " into ", "<register-access>", " as ", "<cast-destination>"
     ]
   ],
-  "<call>": [
-    ["call ", "<locator-or-identifier>", " ", "<zero-or-more-operands>",
-      " into ", "<register-access>"
-    ]
+  "<call>": [["call ", "<locator-or-identifier>", " ", "<zero-or-more-operands>", "<zero-or-more-call-destinations>"]],
+  "<zero-or-more-call-destinations>": [
+    [],
+    [" into ", "<one-or-more-register-accesses>"]
   ],
-  "<async>": [
-    ["async ", "<identifier>", " ", "<zero-or-more-operands>",
-      " into ", "<register-access>"
-  ]],
+  "<async>": [["async ", "<identifier>", " ", "<zero-or-more-operands>"," into ", "<register-access>"]],
 
   "<unary-op>": [
     ["abs"], ["abs.w"],
@@ -222,34 +220,34 @@
   "<is-op>": [["is.eq"], ["is.neq"]],
   "<assert-op>": [["assert.eq"], ["assert.neq"]],
   "<commit-op>": [
-    ["commit.bhp", "256"],
-    ["commit.bhp", "512"],
-    ["commit.bhp", "768"],
-    ["commit.bhp", "1024"],
-    ["commit.ped", "64"],
-    ["commit.ped", "128"]
+    ["commit.bhp256"],
+    ["commit.bhp512"],
+    ["commit.bhp768"],
+    ["commit.bhp1024"],
+    ["commit.ped64"],
+    ["commit.ped128"]
   ],
   "<hash1-op>": [
-    ["hash.bhp", "256"],
-    ["hash.bhp", "512"],
-    ["hash.bhp", "768"],
-    ["hash.bhp", "1024"],
-    ["hash.ped", "64"],
-    ["hash.ped", "128"],
-    ["hash.psd", "2"],
-    ["hash.psd", "4"],
-    ["hash.psd", "8"],
-    ["hash.keccak", "256"],
-    ["hash.keccak", "384"],
-    ["hash.keccak", "512"],
-    ["hash.sha3_", "256"],
-    ["hash.sha3_", "384"],
-    ["hash.sha3_", "512"]
+    ["hash.bhp256"],
+    ["hash.bhp512"],
+    ["hash.bhp768"],
+    ["hash.bhp1024"],
+    ["hash.ped64"],
+    ["hash.ped128"],
+    ["hash.psd2"],
+    ["hash.psd4"],
+    ["hash.psd8"],
+    ["hash.keccak256"],
+    ["hash.keccak384"],
+    ["hash.keccak512"],
+    ["hash.sha3_256"],
+    ["hash.sha3_384"],
+    ["hash.sha3_512"]
   ],
   "<hash2-op>": [
-    ["hash_many.psd", "2"],
-    ["hash_many.psd", "4"],
-    ["hash_many.psd", "8"]
+    ["hash_many.psd2"],
+    ["hash_many.psd4"],
+    ["hash_many.psd8"]
   ],
   "<cast-op>": [["cast"], ["cast.lossy"]],
   "<branch-op>": [["branch.eq"], ["branch.neq"]],
@@ -264,6 +262,10 @@
   
   "<register>": [["r", "<one-or-more-digits>"]],
   "<register-access>": [["<register>", "<zero-or-more-register-accessors>"]],
+  "<one-or-more-register-accesses>": [
+    ["<register-access>"],
+    ["<register-access>", " ", "<one-or-more-register-accesses>"]
+  ],
   "<register-accessor>": [
     [".", "<identifier>"],
     ["[", "<u32-literal>", "]"]
@@ -287,7 +289,7 @@
     ["<one-or-more-operands>"]
   ],
   "<one-or-more-operands>": [
-    ["<operand>", "<zero-or-more-operands>"]
+    ["<operand>", " ", "<zero-or-more-operands>"]
   ],
 
   "<register-type>": [
@@ -376,35 +378,14 @@
     ["<unsigned-literal>"],
     ["<signed-literal>"]
   ],
-  "<unsigned-literal>": [
-    ["<digit>", "<digit-literal-suffix>", "<unsigned-type>"],
-    ["-", "<digit>", "<digit-literal-suffix>", "<unsigned-type>"]
-  ],
-  "<signed-literal>": [
-    ["<digit>", "<digit-literal-suffix>", "<signed-type>"],
-    ["-", "<digit>", "<digit-literal-suffix>", "<signed-type>"]
-  ],
-  "<field-literal>": [
-    ["<digit>", "<digit-literal-suffix>", "<field-type>"],
-    ["-", "<digit>", "<digit-literal-suffix>", "<field-type>"]
-  ],
-  "<group-literal>": [
-    ["<digit>", "<digit-literal-suffix>", "<group-type>"],
-    ["-", "<digit>", "<digit-literal-suffix>", "<group-type>"]
-  ],
-  "<scalar-literal>": [
-    ["<digit>", "<digit-literal-suffix>", "<scalar-type>"],
-    ["-", "<digit>", "<digit-literal-suffix>", "<scalar-type>"]
-  ],
-  "<u32-literal>": [
-    ["<digit>", "<digit-literal-suffix>", "u32"],
-    ["-", "<digit>", "<digit-literal-suffix>", "u32"]
-  ],
-  "<digit-literal-suffix>": [
-    ["<digit>"],
-    ["_"],
-    ["<digit-literal-suffix>", "<digit-literal-suffix>"]
-  ],
+  "<unsigned-literal>": [["<optional-sign>", "<one-or-more-digits>", "<optional-underscore>", "<unsigned-type>"]],
+  "<signed-literal>": [["<optional-sign>", "<one-or-more-digits>", "<optional-underscore>", "<signed-type>"]],
+  "<field-literal>": [["<optional-sign>", "<one-or-more-digits>", "<optional-underscore>", "<field-type>"]],
+  "<group-literal>": [["<optional-sign>", "<one-or-more-digits>", "<optional-underscore>", "<group-type>"]],
+  "<scalar-literal>": [["<optional-sign>", "<one-or-more-digits>", "<optional-underscore>", "<scalar-type>"]],
+  "<u32-literal>": [["<optional-sign>", "<one-or-more-digits>", "<optional-underscore>", "u32"]],
+  "<optional-sign>": [[], ["-"]],
+  "<optional-underscore>": [[], ["_"]],
   "<boolean-literal>": [["true"], ["false"]],
   "<address-literal>": [["aleo1", "<address-or-signature-suffix>"]],
   "<signature-literal>": [["sign1", "<address-or-signature-suffix>"]],
