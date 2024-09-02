@@ -189,12 +189,17 @@
   ],
   "<random>": [
     ["<ws>", "rand.chacha",
-      "<ws>", "<operand>", "<ws>", "<operand>",
+      "<ws>", "<zero-to-two-operands>",
       "<ws>", "into", "<ws>", "<register-access>", 
       "<ws>", "as", "<ws>",
       "<random-output-type>",
       "<ws>", ";"
     ]
+  ],
+  "<zero-to-two-operands>": [
+    [],
+    ["<operand>"],
+    ["<operand>", "<ws>", "<operand>"]
   ],
   "<position>": [["<ws>", "position", "<ws>", "<label>", "<ws>", ";"]],
   "<branch>": [["<ws>", "<branch-op>", "<ws>", "<operand>", "<ws>", "<operand>", "<ws>", "to", "<ws>", "<label>", "<ws>", ";"]],
@@ -444,14 +449,18 @@
     ["<unsigned-literal>"],
     ["<signed-literal>"]
   ],
-  "<unsigned-literal>": [["<optional-sign>", "<one-or-more-digits>", "<optional-underscore>", "<unsigned-type>"]],
-  "<signed-literal>": [["<optional-sign>", "<one-or-more-digits>", "<optional-underscore>", "<signed-type>"]],
-  "<field-literal>": [["<optional-sign>", "<one-or-more-digits>", "<optional-underscore>", "<field-type>"]],
-  "<group-literal>": [["<optional-sign>", "<one-or-more-digits>", "<optional-underscore>", "<group-type>"]],
-  "<scalar-literal>": [["<optional-sign>", "<one-or-more-digits>", "<optional-underscore>", "<scalar-type>"]],
-  "<u32-literal>": [["<optional-sign>", "<one-or-more-digits>", "<optional-underscore>", "u32"]],
+  "<unsigned-literal>": [["<optional-sign>", "<digit>", "<digit-literal-suffix>", "<unsigned-type>"]],
+  "<signed-literal>": [["<optional-sign>", "<digit>", "<digit-literal-suffix>", "<signed-type>"]],
+  "<field-literal>": [["<optional-sign>", "<digit>", "<digit-literal-suffix>", "<field-type>"]],
+  "<group-literal>": [["<optional-sign>", "<digit>", "<digit-literal-suffix>", "<group-type>"]],
+  "<scalar-literal>": [["<optional-sign>", "<digit>", "<digit-literal-suffix>", "<scalar-type>"]],
+  "<u32-literal>": [["<optional-sign>", "<digit>", "<digit-literal-suffix>", "u32"]],
+  "<digit-literal-suffix>": [
+    ["<digit>"],
+    ["_"],
+    ["<digit-literal-suffix>", "<digit-literal-suffix>"]
+  ],
   "<optional-sign>": [[], ["-"]],
-  "<optional-underscore>": [[], ["_"]],
   "<boolean-literal>": [["true"], ["false"]],
   "<address-literal>": [["aleo1", "<address-or-signature-suffix>"]],
   "<signature-literal>": [["sign1", "<address-or-signature-suffix>"]],

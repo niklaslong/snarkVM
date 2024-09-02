@@ -120,11 +120,16 @@
   "<remove>": [[" remove ", "<identifier>", "[", "<operand>", "];\n"]],
   "<random>": [
     [" rand.chacha ",
-      "<operand>", " ", "<operand>",
+      "<zero-to-two-operands>",
       " into ", "<register-access>", 
       " as ",
       "<random-output-type>", ";\n"
     ]
+  ],
+  "<zero-to-two-operands>": [
+    [],
+    ["<operand>"],
+    ["<operand>", " ", "<operand>"]
   ],
   "<position>": [[" position ", "<label>", ";\n"]],
   "<branch>": [[" ", "<branch-op>", " ", "<operand>", " ", "<operand>", " to ", "<label>", ";\n"]],
