@@ -9,7 +9,7 @@ cargo install cargo-afl
 git clone https://github.com/AFLplusplus/Grammar-Mutator.git
 ```
 
-You'll also need to install the grammar mutator dependencies you're missing. If you're on Linux the mutator's README should guide you in the right direction, if you're on Windows... I can't help you, I'm truly sorry. If you're on macOS, Java can be installed with Homebrew and is named differently to the linux package. 
+You'll also need to install the grammar mutator dependencies you're missing. If you're on Linux the mutator's README should guide you in the right direction.
 
 ```sh
 brew install openjdk 
@@ -39,27 +39,27 @@ Next up, building the grammar mutator. If all goes well, you should have a `libg
 
 ```sh
 # In Grammar-Mutator/.
-make GRAMMAR_FILE=../snarkVM/afl/grammars/aleo.json 
+make GRAMMAR_FILE=../snarkVM/afl/grammars/aleo.json
 ```
 
-Really hoping things went well. No, seriously. If they did, we can return to the rolling fields of snarkVM and have some fun.
+Now, back to snarkVM.
 
 ```sh
 # In snarkVM/afl/.
-# This one points AFL to the custom mutator binary we've just built.
+# This one points AFL to the custom mutator library we've just built.
 export AFL_CUSTOM_MUTATOR_LIBRARY=../../Grammar-Mutator/libgrammarmutator-aleo.so
 
-# This one... I have no clue to be honest, what it does is undocumented afaict but it's in the mutator's README so...
+# Specify that only the grammar mutator should be used (omit the default bit flips etc).
 export AFL_CUSTOM_MUTATOR_ONLY=1      
 
 # And now we can build!
-cargo afl build
+cargo afl build --release
 
-# If you get an error, the error will tell you to run this magic command.
+# AFL might enforce that you perform several performance-sensitive tweaks; there is a dedicated script that does this:
 cargo-afl afl system-config
 
-# If the build was succesful, you can now fuzz, you may need to tweak the timeout duration (-t). Yes, mine's crazy high.
-cargo afl fuzz -t 20000 -i seeds -o out target/debug/afl 
+# If the build was succesful, you can now fuzz; you may want to tweak the timeout duration in ms (-t) and the input size range (-g and -G).
+cargo afl fuzz -t 4000 -i seeds -o out -g 24 -G 2048 target/release/afl 
 ```
 
 Results will be saved to the `out` directory. I've included a handy tool (`run_all.sh`), which will execute each of the crashes in order and print the errors to stdout. 
@@ -68,4 +68,3 @@ Results will be saved to the `out` directory. I've included a handy tool (`run_a
 
 - `call` should have multiple register accesses, currently there's only 1
 - `cws` isn't implemented, replaced with `ws` instead (aka no support for comments)
-- some `one-or-more` entries should be `zero-or-more` entries
