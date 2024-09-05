@@ -5,7 +5,9 @@ edition = "2021"
 
 [features]
 authorize = []
-full = []
+execute = []
+deploy = []
+verify_deployment = []
 
 [dependencies]
 afl = "0.15"

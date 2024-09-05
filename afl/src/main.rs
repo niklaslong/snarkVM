@@ -55,7 +55,7 @@ fn main() {
             return;
         }
 
-        if cfg!(any(feature = "authorize", feature = "full")) {
+        if cfg!(any(feature = "authorize", feature = "execute")) {
             // Process all the functions.
             for function in program.functions().values() {
                 // Sample inputs applicable to the given functions.
@@ -88,10 +88,20 @@ fn main() {
                     return;
                 };
 
-                if cfg!(feature = "full") {
+                if cfg!(feature = "execute") {
                     // Attempt to execute the process (which will eventually fail due to lack of key synthesis).
-                    let _ = process.execute::<CurrentAleo, _>(authorization, rng);
+                    let _response_and_trace = process.execute::<CurrentAleo, _>(authorization, rng);
                 }
+            }
+        } else if cfg!(any(feature = "deploy", feature = "verify_deployment")) {
+            // Attempt to deploy the program.
+            let Ok(deployment) = process.deploy::<CurrentAleo, _>(&program, rng) else {
+                return;
+            };
+
+            if cfg!(feature = "verify_deployment") {
+            // Attempt to verify the deployment.
+                let _ = process.verify_deployment::<CurrentAleo, _>(&deployment, rng);
             }
         }
     });
