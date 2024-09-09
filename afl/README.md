@@ -39,7 +39,7 @@ Next up, building the grammar mutator. If all goes well, you should have a `libg
 
 ```sh
 # In Grammar-Mutator/.
-make GRAMMAR_FILE=../snarkVM/afl/grammars/aleo.json
+make GRAMMAR_FILE=../snarkVM/afl/grammars/aleo_simplified.json
 ```
 
 Now, back to snarkVM.
@@ -62,9 +62,4 @@ cargo-afl afl system-config
 cargo afl fuzz -t 4000 -i seeds -o out -g 24 -G 2048 target/release/afl 
 ```
 
-Results will be saved to the `out` directory. I've included a handy tool (`run_all.sh`), which will execute each of the crashes in order and print the errors to stdout. 
-
-## Divergences in ABNF vs JSON:
-
-- `call` should have multiple register accesses, currently there's only 1
-- `cws` isn't implemented, replaced with `ws` instead (aka no support for comments)
+Results will be saved to the `out` directory. There's a `run_all.sh` script, which will execute each of the crashes in order and print the errors to stdout.
