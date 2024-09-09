@@ -1,421 +1,148 @@
 {
-  "<start>": [["<program>"]],
-
-  "<program>": [["program ", "<program-id>", ";\n", "<one-or-more-program-bodies>"]],
-  "<program-id>": [["t.aleo"]],
-  "<program-body>": [
-    ["<mapping>"],
-    ["<struct>"],
-    ["<record>"],
-    ["<closure>"],
-    ["<function>"]
-  ],
-  "<one-or-more-program-bodies>": [
-    ["<program-body>"],
-    ["<program-body>", "<one-or-more-program-bodies>"]
-  ],
-
-  "<label>": [["<identifier>"]],
+  "<start>": [["program"]],
+  "<b33-to-b126>": [["!"], ["\""], ["#"], ["$"], ["%"], ["&"], ["'"], ["("], [")"], ["*"], ["+"], [","], ["-"], ["."], ["/"], ["0"], ["1"], ["2"], ["3"], ["4"], ["5"], ["6"], ["7"], ["8"], ["9"], [":"], [";"], ["<"], ["="], [">"], ["?"], ["@"], ["A"], ["B"], ["C"], ["D"], ["E"], ["F"], ["G"], ["H"], ["I"], ["J"], ["K"], ["L"], ["M"], ["N"], ["O"], ["P"], ["Q"], ["R"], ["S"], ["T"], ["U"], ["V"], ["W"], ["X"], ["Y"], ["Z"], ["["], ["\\"], ["]"], ["^"], ["_"], ["`"], ["a"], ["b"], ["c"], ["d"], ["e"], ["f"], ["g"], ["h"], ["i"], ["j"], ["k"], ["l"], ["m"], ["n"], ["o"], ["p"], ["q"], ["r"], ["s"], ["t"], ["u"], ["v"], ["w"], ["x"], ["y"], ["z"], ["{"], ["|"], ["}"], ["~"]],
+  "<at-most-1-sp>": [[], ["<sp>"]],
+  "<b97-to-b122>": [["a"], ["b"], ["c"], ["d"], ["e"], ["f"], ["g"], ["h"], ["i"], ["j"], ["k"], ["l"], ["m"], ["n"], ["o"], ["p"], ["q"], ["r"], ["s"], ["t"], ["u"], ["v"], ["w"], ["x"], ["y"], ["z"]],
+  "<b48-to-b57>": [["0"], ["1"], ["2"], ["3"], ["4"], ["5"], ["6"], ["7"], ["8"], ["9"]],
+  "<zero-or-more-（letter-or-digit-or-underscore）>": [[], ["<letter-or-digit-or-underscore>", "<zero-or-more-（letter-or-digit-or-underscore）>"]],
+  "<letter-or-digit-or-underscore>": [["<letter>"], ["<digit>"], ["_"]],
+  "<zero-or-more-（lowercase-letter-or-digit-or-underscore）>": [[], ["<lowercase-letter-or-digit-or-underscore>", "<zero-or-more-（lowercase-letter-or-digit-or-underscore）>"]],
+  "<lowercase-letter-or-digit-or-underscore>": [["<lowercase-letter>"], ["<digit>"], ["_"]],
+  "<at-least-1-digit>": [["<digit>"], ["<digit>", "<（at-least-1-digit）>"]],
+  "<zero-or-more-register-accessors>": [[], ["<register-accessor>", "<zero-or-more-register-accessors>"]],
+  "<optional-minus>": [[], ["-"]],
+  "<at-least-1-address-or-signature-char>": [["<address-or-signature-char>"], ["<address-or-signature-char>", "<（at-least-1-address-or-signature-char）>"]],
+  "<constant-or-public-or-private>": [[".constant"], [".public"], [".private"]],
+  "<at-least-1-tuple>": [["<tuple>"], ["<tuple>", "<（at-least-1-tuple）>"]],
+  "<addresspublic-or-addressprivate>": [["address.public"], ["address.private"]],
+  "<zero-or-more-entrys>": [[], ["<entry>", "<zero-or-more-entrys>"]],
+  "<256-or-512-or-768-or-1024>": [["256"], ["512"], ["768"], ["1024"]],
+  "<64-or-128>": [["64"], ["128"]],
+  "<2-or-4-or-8>": [["2"], ["4"], ["8"]],
+  "<256-or-384-or-512>": [["256"], ["384"], ["512"]],
+  "<operand-and-ws>": [["<operand>", "<ws>"]],
+  "<2-（operand-and-ws）>": [["<operand-and-ws>", "<operand-and-ws>"]],
+  "<3-（operand-and-ws）>": [["<operand-and-ws>", "<operand-and-ws>", "<operand-and-ws>"]],
+  "<address-type-or-field-type-or-group-type>": [["<address-type>"], ["<field-type>"], ["<group-type>"]],
+  "<arithmetic-type-or-address-type-or-signature-type-or-array-type-or-identifier>": [["<arithmetic-type>"], ["<address-type>"], ["<signature-type>"], ["<array-type>"], ["<identifier>"]],
+  "<at-least-1-（ws-and-operand）>": [["<ws-and-operand>"], ["<ws-and-operand>", "<（at-least-1-（ws-and-operand））>"]],
+  "<ws-and-operand>": [["<ws>", "<operand>"]],
   "<locator-or-identifier>": [["<locator>"], ["<identifier>"]],
+  "<zero-or-more-（ws-and-operand）>": [[], ["<ws-and-operand>", "<zero-or-more-（ws-and-operand）>"]],
+  "<optional-（into-and-ws-and-（at-least-1-（ws-and-register-access）））>": [[], ["into", "<ws>", "<at-least-1-（ws-and-register-access）>"]],
+  "<at-least-1-（ws-and-register-access）>": [["<ws-and-register-access>"], ["<ws-and-register-access>", "<（at-least-1-（ws-and-register-access））>"]],
+  "<ws-and-register-access>": [["<ws>", "<register-access>"]],
+  "<unary-or-binary-or-ternary-or-is-or-assert-or-commit-or-hash-or-signverify-or-cast-or-call-or-async>": [["<unary>"], ["<binary>"], ["<ternary>"], ["<is>"], ["<assert>"], ["<commit>"], ["<hash>"], ["<signverify>"], ["<cast>"], ["<call>"], ["<async>"]],
+  "<at-most-2-（ws-and-operand）>": [[], ["<ws-and-operand>"], ["<ws-and-operand>", "<ws-and-operand>"]],
+  "<arithmetic-type-or-address-type-or-signature-type-or-boolean-type>": [["<arithmetic-type>"], ["<address-type>"], ["<signature-type>"], ["<boolean-type>"]],
+  "<zero-or-more-closure-inputs>": [[], ["<closure-input>", "<zero-or-more-closure-inputs>"]],
+  "<at-least-1-instruction>": [["<instruction>"], ["<instruction>", "<（at-least-1-instruction）>"]],
+  "<zero-or-more-closure-outputs>": [[], ["<closure-output>", "<zero-or-more-closure-outputs>"]],
+  "<zero-or-more-function-inputs>": [[], ["<function-input>", "<zero-or-more-function-inputs>"]],
+  "<zero-or-more-instructions>": [[], ["<instruction>", "<zero-or-more-instructions>"]],
+  "<zero-or-more-function-outputs>": [[], ["<function-output>", "<zero-or-more-function-outputs>"]],
+  "<optional-finalize>": [[], ["<finalize>"]],
+  "<zero-or-more-finalize-inputs>": [[], ["<finalize-input>", "<zero-or-more-finalize-inputs>"]],
+  "<at-least-1-command>": [["<command>"], ["<command>", "<（at-least-1-command）>"]],
+  "<at-least-1-（mapping-or-struct-or-record-or-closure-or-function）>": [["<mapping-or-struct-or-record-or-closure-or-function>"], ["<mapping-or-struct-or-record-or-closure-or-function>", "<（at-least-1-（mapping-or-struct-or-record-or-closure-or-function））>"]],
+  "<mapping-or-struct-or-record-or-closure-or-function>": [["<mapping>"], ["<struct>"], ["<record>"], ["<closure>"], ["<function>"]],
+  "<sp>": [[" "]],
+  "<visible-ascii>": [["<b33-to-b126>"]],
+  "<ws>": [["<at-most-1-sp>"]],
+  "<cws>": [["<ws>"]],
+  "<lowercase-letter>": [["<b97-to-b122>"]],
+  "<letter>": [["<lowercase-letter>"]],
+  "<digit>": [["<b48-to-b57>"]],
+  "<identifier>": [["<letter>", "<zero-or-more-（letter-or-digit-or-underscore）>"]],
+  "<lowercase-identifier>": [["<lowercase-letter>", "<zero-or-more-（lowercase-letter-or-digit-or-underscore）>"]],
+  "<program-name>": [["<lowercase-identifier>"]],
+  "<program-domain>": [["<lowercase-identifier>"]],
+  "<program-id>": [["<program-name>", ".", "<program-domain>"]],
   "<locator>": [["<program-id>", "/", "<identifier>"]],
-  "<identifier>": [["<lowercase-letter>", "<lowercase-letter>"]],
-
-  "<mapping>": [["\nmapping ", "<identifier>", ":\n", "<mapping-key>", "<mapping-value>"]],
-  "<mapping-key>": [[" key as ", "<mapping-type>", ";\n"]],
-  "<mapping-value>": [[" value as ", "<mapping-type>", ";\n"]],
-
-  "<struct>": [["\nstruct ", "<identifier>", ":\n", "<one-or-more-tuples>"]],
-  "<one-or-more-tuples>": [
-    ["<tuple>"], 
-    ["<tuple>", "<one-or-more-tuples>"]
-  ],
-  "<tuple>": [[" ", "<identifier>", " as ", "<plaintext-type>", ";\n"]],
-
-  "<record>": [
-    ["\nrecord ", "<identifier>", ":\n",
-      " owner as ", "<public-or-private-address>", ";\n",
-      "<zero-or-more-entries>"
-    ]
-  ],
-  "<public-or-private-address>": [["address.public"], ["address.private"]],
-  "<zero-or-more-entries>": [
-    [],
-    ["<entry>", "<zero-or-more-entries>"]
-  ],
-  "<entry>": [[" ", "<identifier>", " as ", "<entry-type>", ";\n"]],
-
-  "<closure>": [
-    ["\nclosure ", "<identifier>", ":\n",
-      "<zero-or-more-closure-inputs>",
-      "<one-or-more-instructions>",
-      "<zero-or-more-closure-outputs>"
-    ]
-  ],
-  "<closure-input>": [[" input ", "<register>", " as ", "<register-type>", ";\n"]],
-  "<zero-or-more-closure-inputs>": [
-    [],
-    ["<closure-input>", "<zero-or-more-closure-inputs>"]
-  ],
-  "<closure-output>": [[" output ", "<operand>", " as ", "<register-type>", ";\n"]],
-  "<zero-or-more-closure-outputs>": [
-    [],
-    ["<closure-output>", "<zero-or-more-closure-outputs>"]
-  ],
-
-  "<function>": [
-    ["\nfunction ", "<identifier>", ":\n",
-      "<zero-or-more-function-inputs>",
-      "<zero-or-more-instructions>",
-      "<zero-or-more-function-outputs>",
-      "<optional-finalize>"
-    ]
-  ],
-  "<optional-finalize>": [
-    [],
-    ["<finalize>"]
-  ],
-  "<function-input>": [[" input ", "<register>", " as ", "<value-type>", ";\n"]],
-  "<zero-or-more-function-inputs>": [
-    [],
-    ["<function-input>", "<zero-or-more-function-inputs>"]
-  ],
-  "<function-output>": [[" output ", "<operand>", " as ", "<value-type>", ";\n"]],
-  "<zero-or-more-function-outputs>": [
-    [],
-    ["<function-output>", "<zero-or-more-function-outputs>"]
-  ],
-
-  "<finalize>": [
-    ["\nfinalize ", "<identifier>", ":\n",
-      "<zero-or-more-finalize-inputs>",
-      "<one-or-more-commands>"
-    ]
-  ],
-  "<zero-or-more-finalize-inputs>": [
-    [],
-    ["<finalize-input>", "<zero-or-more-finalize-inputs>" ]
-  ],
-  "<finalize-input>": [[" input ", "<register>", " as ", "<finalize-type>", ";\n"]],
-  "<one-or-more-commands>": [
-    ["<command>"],
-    ["<command>", "<one-or-more-commands>"]
-  ],
-  "<command>": [
-    ["<contains>"],
-    ["<get>"],
-    ["<get-or-use>"],
-    ["<set>"],
-    ["<remove>"],
-    ["<random>"],
-    ["<position>"],
-    ["<branch>"],
-    ["<await>"],
-    ["<instruction>"]
-  ],
-
-  "<contains>": [[" contains ", "<identifier>", "[", "<operand>", "] into ", "<register-access>", ";\n"]],
-  "<get>": [[" get ", "<identifier>", "[", "<operand>", "] into ", "<register-access>", ";\n"]],
-  "<get-or-use>": [[" get.or_use ", "<identifier>", "[", "<operand>", "] ", "<operand>", " into ", "<register-access>", ";\n"]],
-  "<set>": [[" set ", "<operand>", " into ", "<identifier>", "[", "<operand>", "];\n"]],
-  "<remove>": [[" remove ", "<identifier>", "[", "<operand>", "];\n"]],
-  "<random>": [
-    [" rand.chacha ",
-      "<zero-to-two-operands>",
-      " into ", "<register-access>", 
-      " as ",
-      "<random-output-type>", ";\n"
-    ]
-  ],
-  "<zero-to-two-operands>": [
-    [],
-    ["<operand>"],
-    ["<operand>", " ", "<operand>"]
-  ],
-  "<position>": [[" position ", "<label>", ";\n"]],
-  "<branch>": [[" ", "<branch-op>", " ", "<operand>", " ", "<operand>", " to ", "<label>", ";\n"]],
-  "<await>": [[" await ", "<register-access>", ";\n"]],
-
-  "<instruction>": [
-    [" ", "<unary>", ";\n"],
-    [" ", "<binary>", ";\n"],
-    [" ", "<ternary>", ";\n"],
-    [" ", "<is>", ";\n"],
-    [" ", "<assert>", ";\n"],
-    [" ", "<commit>", ";\n"],
-    [" ", "<hash>", ";\n"],
-    [" ", "<signverify>", ";\n"],
-    [" ", "<cast>", ";\n"],
-    [" ", "<call>", ";\n"],
-    [" ", "<async>", ";\n"]
-  ],
-  "<zero-or-more-instructions>": [
-    [],
-    ["<one-or-more-instructions>"]
-  ],
-  "<one-or-more-instructions>": [
-    ["<instruction>", "<zero-or-more-instructions>"]
-  ],
-
-  "<unary>": [["<unary-op>", " ", "<operand>", " into ", "<register-access>"]],
-  "<binary>": [["<binary-op>", " ", "<operand>", " ", "<operand>", " into ", "<register-access>"]],
-  "<ternary>": [["ternary ", "<operand>", " ", "<operand>", " ", "<operand>", " into ", "<register-access>"]],
-  "<is>": [["<is-op>", " ", "<operand>", " ", "<operand>", " into ", "<register-access>"]],
-  "<assert>": [["<assert-op>", " ", "<operand>", " ", "<operand>"]],
-  "<commit>": [
-    ["<commit-op>", " ", "<operand>", " ", "<operand>",
-      " into ", "<register-access>",
-      " as ", "<address-field-or-group-type>"
-    ]
-  ],
-  "<hash>": [["<hash1>"], ["<hash2>"]],
-  "<hash1>": [
-    ["<hash1-op>", " ", "<operand>",
-      " into ", "<register-access>",
-      " as ", "<hash-output-type>"
-    ]
-  ],
-  "<hash2>": [
-    ["<hash2-op>", " ", "<operand>", " ", "<operand>",
-      " into ", "<register-access>",
-      " as ", "<hash-output-type>"
-    ]
-  ],
-  "<signverify>": [["sign.verify ", "<operand>", " ", "<operand>", " ", "<operand>", " into ", "<register-access>"]],
-  "<cast>": [
-    ["<cast-op>", " ", "<one-or-more-operands>",
-      " into ", "<register-access>", " as ", "<cast-destination>"
-    ]
-  ],
-  "<call>": [["call ", "<locator-or-identifier>", " ", "<zero-or-more-operands>", "<zero-or-more-call-destinations>"]],
-  "<zero-or-more-call-destinations>": [
-    [],
-    [" into ", "<one-or-more-register-accesses>"]
-  ],
-  "<async>": [["async ", "<identifier>", " ", "<zero-or-more-operands>"," into ", "<register-access>"]],
-
-  "<unary-op>": [
-    ["abs"], ["abs.w"],
-    ["double"],
-    ["inv"],
-    ["neg"],
-    ["not"],
-    ["square"],
-    ["sqrt"]
-  ],
-  "<binary-op>": [
-    ["add"], ["add.w"],
-    ["sub"], ["sub.w"],
-    ["mul"], ["mul.w"],
-    ["div"], ["div.w"],
-    ["rem"], ["rem.w"],
-    ["mod"],
-    ["pow"], ["pow.w"],
-    ["shl"], ["shl.w"],
-    ["shr"], ["shr.w"],
-    ["and"],
-    ["or"],
-    ["xor"],
-    ["nand"],
-    ["nor"],
-    ["gt"],
-    ["gte"],
-    ["lt"],
-    ["lte"]
-  ],
-  "<is-op>": [["is.eq"], ["is.neq"]],
-  "<assert-op>": [["assert.eq"], ["assert.neq"]],
-  "<commit-op>": [
-    ["commit.bhp256"],
-    ["commit.bhp512"],
-    ["commit.bhp768"],
-    ["commit.bhp1024"],
-    ["commit.ped64"],
-    ["commit.ped128"]
-  ],
-  "<hash1-op>": [
-    ["hash.bhp256"],
-    ["hash.bhp512"],
-    ["hash.bhp768"],
-    ["hash.bhp1024"],
-    ["hash.ped64"],
-    ["hash.ped128"],
-    ["hash.psd2"],
-    ["hash.psd4"],
-    ["hash.psd8"],
-    ["hash.keccak256"],
-    ["hash.keccak384"],
-    ["hash.keccak512"],
-    ["hash.sha3_256"],
-    ["hash.sha3_384"],
-    ["hash.sha3_512"]
-  ],
-  "<hash2-op>": [
-    ["hash_many.psd2"],
-    ["hash_many.psd4"],
-    ["hash_many.psd8"]
-  ],
-  "<cast-op>": [["cast"], ["cast.lossy"]],
-  "<branch-op>": [["branch.eq"], ["branch.neq"]],
-
-  "<cast-destination>": [
-    ["<plaintext-type>"],
-    ["<identifier>"],
-    ["<locator>"],
-    ["group.x"],
-    ["group.y"]
-  ],
-  
-  "<register>": [["r", "<one-or-more-digits>"]],
+  "<register>": [["r", "<at-least-1-digit>"]],
+  "<register-accessor>": [[".", "<identifier>"], ["[", "<u32-literal>", "]"]],
   "<register-access>": [["<register>", "<zero-or-more-register-accessors>"]],
-  "<one-or-more-register-accesses>": [
-    ["<register-access>"],
-    ["<register-access>", " ", "<one-or-more-register-accesses>"]
-  ],
-  "<register-accessor>": [
-    [".", "<identifier>"],
-    ["[", "<u32-literal>", "]"]
-  ],
-  "<zero-or-more-register-accessors>": [
-    [],
-    ["<register-accessor>", "<zero-or-more-register-accessors>"]
-  ],
-  
-  "<operand>": [
-    ["<literal>"],
-    ["group::GEN"],
-    ["<register-access>"],
-    ["<program-id>"],
-    ["self.signer"],
-    ["self.caller"],
-    ["block.height"]
-  ],
-  "<zero-or-more-operands>": [
-    [],
-    ["<one-or-more-operands>"]
-  ],
-  "<one-or-more-operands>": [
-    ["<operand>", " ", "<zero-or-more-operands>"]
-  ],
-
-  "<register-type>": [
-    ["<locator>", ".future"],
-    ["<locator>", ".record"],
-    ["<identifier>", ".record"],
-    ["<plaintext-type>"]
-  ],
-  "<value-type>": [
-    ["<plaintext-type>", ".constant"],
-    ["<plaintext-type>", ".public"],
-    ["<plaintext-type>", ".private"],
-    ["<identifier>", ".record"],
-    ["<locator>", ".record"],
-    ["<locator>", ".future"]
-  ],
-  "<finalize-type>": [
-    ["<plaintext-type>", ".public"],
-    ["<locator>", ".future"]
-  ],
-  "<mapping-type>": [["<plaintext-type>", ".public"]],
-  "<entry-type>": [
-    ["<plaintext-type>", ".constant"],
-    ["<plaintext-type>", ".public"],
-    ["<plaintext-type>", ".private"]
-  ],
-  "<plaintext-type>": [
-    ["<array-type>"],
-    ["<literal-type>"],
-    ["<identifier>"]
-  ],
-  "<array-type>": [["[", "<plaintext-type>", ";", "<u32-literal>", "]"]],
-  "<literal-type>": [
-    ["<arithmetic-type>"],
-    ["<address-type>"],
-    ["<signature-type>"], 
-    ["<boolean-type>"]
-  ],
-  "<address-type>": [["address"]],
-  "<signature-type>": [["signature"]],
-  "<boolean-type>": [["boolean"]],
-  "<arithmetic-type>": [
-    ["<integer-type>"],
-    ["<field-type>"],
-    ["<group-type>"],
-    ["<scalar-type>"]
-  ],
+  "<signed-literal>": [["<optional-minus>", "<at-least-1-digit>", "<signed-type>"]],
+  "<unsigned-literal>": [["<optional-minus>", "<at-least-1-digit>", "<unsigned-type>"]],
+  "<integer-literal>": [["<signed-literal>"], ["<unsigned-literal>"]],
+  "<field-literal>": [["<optional-minus>", "<at-least-1-digit>", "<field-type>"]],
+  "<group-literal>": [["<optional-minus>", "<at-least-1-digit>", "<group-type>"]],
+  "<scalar-literal>": [["<optional-minus>", "<at-least-1-digit>", "<scalar-type>"]],
+  "<arithmetic-literal>": [["<integer-literal>"], ["<field-literal>"], ["<group-literal>"], ["<scalar-literal>"]],
+  "<u32-literal>": [["<optional-minus>", "<at-least-1-digit>", "u32"]],
+  "<address-literal>": [["aleo1", "<at-least-1-address-or-signature-char>"]],
+  "<signature-literal>": [["sign1", "<at-least-1-address-or-signature-char>"]],
+  "<address-or-signature-char>": [["0"], ["2"], ["3"], ["4"], ["5"], ["6"], ["7"], ["8"], ["9"], ["a"], ["c"], ["d"], ["e"], ["f"], ["g"], ["h"], ["j"], ["k"], ["l"], ["m"], ["n"], ["p"], ["q"], ["r"], ["s"], ["t"], ["u"], ["v"], ["w"], ["x"], ["y"], ["z"]],
+  "<boolean-literal>": [["true"], ["false"]],
+  "<literal>": [["<arithmetic-literal>"], ["<address-literal>"], ["<signature-literal>"], ["<boolean-literal>"]],
+  "<operand>": [["<literal>"], ["group::GEN"], ["<register-access>"], ["<program-id>"], ["self.signer"], ["self.caller"], ["block.height"]],
+  "<unsigned-type>": [["u8"], ["u16"], ["u32"], ["u64"], ["u128"]],
+  "<signed-type>": [["i8"], ["i16"], ["i32"], ["i64"], ["i128"]],
+  "<integer-type>": [["<unsigned-type>"], ["<signed-type>"]],
   "<field-type>": [["field"]],
   "<group-type>": [["group"]],
   "<scalar-type>": [["scalar"]],
-  "<integer-type>": [["<unsigned-type>"], ["<signed-type>"]],
-  "<unsigned-type>": [["u8"], ["u16"], ["u32"], ["u64"], ["u128"]],
-  "<signed-type>": [["i8"], ["i16"], ["i32"], ["i64"], ["i128"]],
-  "<address-field-or-group-type>": [
-    ["<address-type>"], 
-    ["<field-type>"], 
-    ["<group-type>"]
-  ],
-  "<hash-output-type>": [
-    ["<arithmetic-type>"],
-    ["<address-type>"], 
-    ["<signature-type>"], 
-    ["<array-type>"], 
-    ["<identifier>"]
-  ],
-  "<random-output-type>": [
-    ["<arithmetic-type>"],
-    ["<address-type>"],
-    ["<signature-type>"],
-    ["<boolean-type>"]
-  ],
-
-  "<literal>": [
-    ["<arithmetic-literal>"],
-    ["<address-literal>"],
-    ["<signature-literal>"],
-    ["<boolean-literal>"]
-  ],
-  "<arithmetic-literal>": [
-    ["<integer-literal>"],
-    ["<field-literal>"],
-    ["<group-literal>"],
-    ["<scalar-literal>"]
-  ],
-  "<integer-literal>": [
-    ["<unsigned-literal>"],
-    ["<signed-literal>"]
-  ],
-  "<unsigned-literal>": [["<optional-sign>", "<one-or-more-digits>", "<unsigned-type>"]],
-  "<signed-literal>": [["<optional-sign>", "<one-or-more-digits>", "<signed-type>"]],
-  "<field-literal>": [["<optional-sign>", "<one-or-more-digits>", "<field-type>"]],
-  "<group-literal>": [["<optional-sign>", "<one-or-more-digits>", "<group-type>"]],
-  "<scalar-literal>": [["<optional-sign>", "<one-or-more-digits>", "<scalar-type>"]],
-  "<u32-literal>": [["<optional-sign>", "<one-or-more-digits>", "u32"]],
-  "<optional-sign>": [[], ["-"]],
-  "<boolean-literal>": [["true"], ["false"]],
-  "<address-literal>": [["aleo1", "<address-or-signature-suffix>"]],
-  "<signature-literal>": [["sign1", "<address-or-signature-suffix>"]],
-  "<address-or-signature-suffix>": [
-    ["<address-or-signature-char>"],
-    ["<address-or-signature-char>", "_"],
-    ["<address-or-signature-suffix>", "<address-or-signature-suffix>"]
-  ],
-  "<address-or-signature-char>": [
-    ["0"],["2"],["3"],["4"],["5"],["6"],["7"],["8"],["9"],
-    ["a"],["c"],["d"],["e"],["f"],["g"],["h"],["j"],["k"],["l"],["m"],["n"],
-    ["p"],["q"],["r"],["s"],["t"],["u"],["v"],["w"],["x"],["y"],["z"]
-  ],
-  
-  "<letter>": [["<uppercase-letter>"], ["<lowercase-letter>"]],
-  "<uppercase-letter>": [
-    ["A"],["B"],["C"],["D"],["E"],["F"],["G"],["H"],["I"],["J"],["K"],["L"],["M"],
-    ["N"],["O"],["P"],["Q"],["R"],["S"],["T"],["U"],["V"],["W"],["X"],["Y"],["Z"]
-  ],
-  "<lowercase-letter>": [
-    ["a"],["b"],["c"],["d"],["e"],["f"],["g"],["h"],["i"],["j"],["k"],["l"],["m"],
-    ["n"],["o"],["p"],["q"],["r"],["s"],["t"],["u"],["v"],["w"],["x"],["y"],["z"]
-  ],
-  "<digit>": [["0"],["1"],["2"],["3"],["4"],["5"],["6"],["7"],["8"],["9"]],
-  "<one-or-more-digits>": [
-    ["<digit>"],
-    ["<digit>", "<one-or-more-digits>"]
-  ]
+  "<arithmetic-type>": [["<integer-type>"], ["<field-type>"], ["<group-type>"], ["<scalar-type>"]],
+  "<address-type>": [["address"]],
+  "<boolean-type>": [["boolean"]],
+  "<signature-type>": [["signature"]],
+  "<literal-type>": [["<arithmetic-type>"], ["<address-type>"], ["<signature-type>"], ["<boolean-type>"]],
+  "<array-type>": [["[", "<ws>", "<plaintext-type>", "<ws>", ";", "<ws>", "<u32-literal>", "<ws>", "]"]],
+  "<plaintext-type>": [["<literal-type>"], ["<array-type>"], ["<identifier>"]],
+  "<value-type>": [["<plaintext-type>", ".constant"], ["<plaintext-type>", ".public"], ["<plaintext-type>", ".private"], ["<identifier>", ".record"], ["<locator>", ".record"], ["<locator>", ".future"]],
+  "<mapping-type>": [["<plaintext-type>", ".public"]],
+  "<finalize-type>": [["<plaintext-type>", ".public"], ["<locator>", ".future"]],
+  "<entry-type>": [["<plaintext-type>", "<constant-or-public-or-private>"]],
+  "<register-type>": [["<locator>", ".future"], ["<locator>", ".record"], ["<identifier>", ".record"], ["<plaintext-type>"]],
+  "<mapping>": [["<cws>", "mapping", "<ws>", "<identifier>", "<ws>", ":", "<mapping-key>", "<mapping-value>"]],
+  "<mapping-key>": [["<cws>", "key", "<ws>", "as", "<ws>", "<mapping-type>", "<ws>", ";"]],
+  "<mapping-value>": [["<cws>", "value", "<ws>", "as", "<ws>", "<mapping-type>", "<ws>", ";"]],
+  "<struct>": [["<cws>", "struct", "<ws>", "<identifier>", "<ws>", ":", "<at-least-1-tuple>"]],
+  "<tuple>": [["<cws>", "<identifier>", "<ws>", "as", "<ws>", "<plaintext-type>", "<ws>", ";"]],
+  "<record>": [["<cws>", "record", "<ws>", "<identifier>", "<ws>", ":", "<cws>", "owner", "<ws>", "as", "<ws>", "<addresspublic-or-addressprivate>", "<ws>", ";", "<zero-or-more-entrys>"]],
+  "<entry>": [["<cws>", "<identifier>", "<ws>", "as", "<ws>", "<entry-type>", "<ws>", ";"]],
+  "<unary-op>": [["abs"], ["abs.w"], ["double"], ["inv"], ["neg"], ["not"], ["square"], ["sqrt"]],
+  "<binary-op>": [["add"], ["add.w"], ["sub"], ["sub.w"], ["mul"], ["mul.w"], ["div"], ["div.w"], ["rem"], ["rem.w"], ["mod"], ["pow"], ["pow.w"], ["shl"], ["shl.w"], ["shr"], ["shr.w"], ["and"], ["or"], ["xor"], ["nand"], ["nor"], ["gt"], ["gte"], ["lt"], ["lte"]],
+  "<is-op>": [["is.eq"], ["is.neq"]],
+  "<assert-op>": [["assert.eq"], ["assert.neq"]],
+  "<commit-op>": [["commit.bhp", "<256-or-512-or-768-or-1024>"], ["commit.ped", "<64-or-128>"]],
+  "<hash1-op>": [["hash.bhp", "<256-or-512-or-768-or-1024>"], ["hash.ped", "<64-or-128>"], ["hash.psd", "<2-or-4-or-8>"], ["hash.keccak", "<256-or-384-or-512>"], ["hash.sha3_", "<256-or-384-or-512>"]],
+  "<hash2-op>": [["hash_many.psd", "<2-or-4-or-8>"]],
+  "<cast-op>": [["cast"], ["cast.lossy"]],
+  "<cast-destination>": [["<plaintext-type>"], ["<identifier>"], ["<locator>"], ["group.x"], ["group.y"]],
+  "<unary>": [["<unary-op>", "<ws>", "<operand-and-ws>", "into", "<ws>", "<register-access>"]],
+  "<binary>": [["<binary-op>", "<ws>", "<2-（operand-and-ws）>", "into", "<ws>", "<register-access>"]],
+  "<ternary>": [["ternary", "<ws>", "<3-（operand-and-ws）>", "into", "<ws>", "<register-access>"]],
+  "<is>": [["<is-op>", "<ws>", "<operand>", "<ws>", "<operand>", "<ws>", "into", "<ws>", "<register-access>"]],
+  "<assert>": [["<assert-op>", "<ws>", "<operand>", "<ws>", "<operand>"]],
+  "<commit>": [["<commit-op>", "<ws>", "<operand>", "<ws>", "<operand>", "<ws>", "into", "<ws>", "<register-access>", "<ws>", "as", "<ws>", "<address-type-or-field-type-or-group-type>"]],
+  "<hash1>": [["<hash1-op>", "<ws>", "<operand>", "<ws>", "into", "<ws>", "<register-access>", "<ws>", "as", "<ws>", "<arithmetic-type-or-address-type-or-signature-type-or-array-type-or-identifier>"]],
+  "<hash2>": [["<hash2-op>", "<ws>", "<operand>", "<ws>", "<operand>", "<ws>", "into", "<ws>", "<register-access>", "<ws>", "as", "<ws>", "<arithmetic-type-or-address-type-or-signature-type-or-array-type-or-identifier>"]],
+  "<hash>": [["<hash1>"], ["<hash2>"]],
+  "<signverify>": [["sign.verify", "<ws>", "<operand>", "<ws>", "<operand>", "<ws>", "<operand>", "<ws>", "into", "<ws>", "<register-access>"]],
+  "<cast>": [["<cast-op>", "<at-least-1-（ws-and-operand）>", "<ws>", "into", "<ws>", "<register-access>", "<ws>", "as", "<ws>", "<cast-destination>"]],
+  "<call>": [["call", "<ws>", "<locator-or-identifier>", "<ws>", "<zero-or-more-（ws-and-operand）>", "<ws>", "<optional-（into-and-ws-and-（at-least-1-（ws-and-register-access）））>"]],
+  "<async>": [["<cws>", "async", "<ws>", "<identifier>", "<zero-or-more-（ws-and-operand）>", "<ws>", "into", "<ws>", "<register-access>", "<ws>"]],
+  "<instruction>": [["<cws>", "<unary-or-binary-or-ternary-or-is-or-assert-or-commit-or-hash-or-signverify-or-cast-or-call-or-async>", "<ws>", ";"]],
+  "<contains>": [["<cws>", "contains", "<ws>", "<identifier>", "[", "<ws>", "<operand>", "<ws>", "]", "<ws>", "into", "<ws>", "<register-access>", "<ws>", ";"]],
+  "<get>": [["<cws>", "get", "<ws>", "<identifier>", "[", "<ws>", "<operand>", "<ws>", "]", "<ws>", "into", "<ws>", "<register-access>", "<ws>", ";"]],
+  "<get-or-use>": [["<cws>", "get.or_use", "<ws>", "<identifier>", "[", "<ws>", "<operand>", "<ws>", "]", "<ws>", "<operand>", "<ws>", "into", "<ws>", "<register-access>", "<ws>", ";"]],
+  "<set>": [["<cws>", "set", "<ws>", "<operand>", "<ws>", "into", "<ws>", "<identifier>", "[", "<ws>", "<operand>", "<ws>", "]", "<ws>", ";"]],
+  "<remove>": [["<cws>", "remove", "<ws>", "<identifier>", "[", "<ws>", "<operand>", "<ws>", "]", "<ws>", ";"]],
+  "<random>": [["<cws>", "rand.chacha", "<at-most-2-（ws-and-operand）>", "<ws>", "into", "<ws>", "<register-access>", "<ws>", "as", "<ws>", "<arithmetic-type-or-address-type-or-signature-type-or-boolean-type>", "<ws>", ";"]],
+  "<label>": [["<identifier>"]],
+  "<position>": [["<cws>", "position", "<ws>", "<label>", "<ws>", ";"]],
+  "<branch-op>": [["branch.eq"], ["branch.neq"]],
+  "<branch>": [["<cws>", "<branch-op>", "<ws>", "<operand>", "<ws>", "<operand>", "<ws>", "to", "<ws>", "<label>", "<ws>", ";"]],
+  "<await>": [["<cws>", "await", "<ws>", "<register-access>", "<ws>", ";"]],
+  "<command>": [["<contains>"], ["<get>"], ["<get-or-use>"], ["<set>"], ["<remove>"], ["<random>"], ["<position>"], ["<branch>"], ["<await>"], ["<instruction>"]],
+  "<closure>": [["<cws>", "closure", "<ws>", "<identifier>", "<ws>", ":", "<zero-or-more-closure-inputs>", "<at-least-1-instruction>", "<zero-or-more-closure-outputs>"]],
+  "<closure-input>": [["<cws>", "input", "<ws>", "<register>", "<ws>", "as", "<ws>", "<register-type>", "<ws>", ";"]],
+  "<closure-output>": [["<cws>", "output", "<ws>", "<operand>", "<ws>", "as", "<ws>", "<register-type>", "<ws>", ";"]],
+  "<function>": [["<cws>", "function", "<ws>", "<identifier>", "<ws>", ":", "<zero-or-more-function-inputs>", "<zero-or-more-instructions>", "<zero-or-more-function-outputs>", "<optional-finalize>"]],
+  "<function-input>": [["<cws>", "input", "<ws>", "<register>", "<ws>", "as", "<ws>", "<value-type>", "<ws>", ";"]],
+  "<function-output>": [["<cws>", "output", "<ws>", "<operand>", "<ws>", "as", "<ws>", "<value-type>", "<ws>", ";"]],
+  "<finalize>": [["<cws>", "finalize", "<ws>", "<identifier>", "<ws>", ":", "<zero-or-more-finalize-inputs>", "<at-least-1-command>"]],
+  "<finalize-input>": [["<cws>", "input", "<ws>", "<register>", "<ws>", "as", "<ws>", "<finalize-type>", "<ws>", ";"]],
+  "<program>": [["<cws>", "program", "<ws>", "<program-id>", "<ws>", ";", "<at-least-1-（mapping-or-struct-or-record-or-closure-or-function）>", "<cws>"]]
 }

@@ -1,0 +1,405 @@
+; Copyright (C) 2022-2023 Aleo Systems Inc.
+; This file is part of the Aleo library.
+
+; The Aleo library is free software: you can redistribute it and/or modify
+; it under the terms of the GNU General Public License as published by
+; the Free Software Foundation, either version 3 of the License, or
+; (at your option) any later version.
+
+; The Aleo library is distributed in the hope that it will be useful,
+; but WITHOUT ANY WARRANTY; without even the implied warranty of
+; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+; GNU General Public License for more details.
+
+; You should have received a copy of the GNU General Public License
+; along with the Aleo library. If not, see <https://www.gnu.org/licenses/>.
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+; This file is a simplified version of the grammar of Aleo instructions in the ABNF notation,
+; optimized for fuzzing performance. Compared to the full grammar, the differences are:
+; - all whitespaces are at most a single space
+; - only ASCII characters/digits are used
+; - there are no comments
+; - there are no underscores in numbers, signatures or addresses
+; - there are no program imports
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+sp = %x20 ; space
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+visible-ascii = %x21-7E
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+ws = *1sp ; whitespace
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+cws = ws ; whitespace
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+lowercase-letter = %x61-7A ; a-z
+
+letter = lowercase-letter
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+digit = %x30-39 ; 0-9
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+identifier = letter *( letter / digit / "_" )
+
+lowercase-identifier = lowercase-letter *( lowercase-letter / digit / "_" )
+
+program-name = lowercase-identifier
+
+program-domain = lowercase-identifier
+
+program-id = program-name "." program-domain
+
+locator = program-id "/" identifier
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+register = %s"r" 1*digit
+
+register-accessor = "." identifier / "[" u32-literal "]"
+
+register-access = register *register-accessor
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+signed-literal = [ "-" ] 1*digit signed-type
+
+unsigned-literal = [ "-" ] 1*digit unsigned-type
+
+integer-literal = signed-literal / unsigned-literal
+
+field-literal = [ "-" ] 1*digit field-type
+
+group-literal = [ "-" ] 1*digit group-type
+
+scalar-literal = [ "-" ] 1*digit scalar-type
+
+arithmetic-literal = integer-literal
+                   / field-literal
+                   / group-literal
+                   / scalar-literal
+
+u32-literal = [ "-" ] 1*digit %s"u32"
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+address-literal = %s"aleo1" 1*address-or-signature-char
+
+signature-literal = %s"sign1" 1*address-or-signature-char
+
+address-or-signature-char =
+    "0" / "2" / "3" / "4" / "5" / "6" / "7" / "8" / "9"
+  / %s"a" / %s"c" / %s"d" / %s"e" / %s"f" / %s"g" / %s"h" / %s"j"
+  / %s"k" / %s"l" / %s"m" / %s"n" / %s"p" / %s"q" / %s"r" / %s"s"
+  / %s"t" / %s"u" / %s"v" / %s"w" / %s"x" / %s"y" / %s"z"
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+boolean-literal = %s"true" / %s"false"
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+literal = arithmetic-literal
+        / address-literal
+        / signature-literal
+        / boolean-literal
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+operand = literal
+        / %s"group::GEN"
+        / register-access
+        / program-id
+        / %s"self.signer"
+        / %s"self.caller"
+        / %s"block.height"
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+unsigned-type = %s"u8" / %s"u16" / %s"u32" / %s"u64" / %s"u128"
+
+signed-type = %s"i8" / %s"i16" / %s"i32" / %s"i64" / %s"i128"
+
+integer-type = unsigned-type / signed-type
+
+field-type = %s"field"
+
+group-type = %s"group"
+
+scalar-type = %s"scalar"
+
+arithmetic-type = integer-type / field-type / group-type / scalar-type
+
+address-type = %s"address"
+
+boolean-type = %s"boolean"
+
+signature-type = %s"signature"
+
+literal-type = arithmetic-type
+             / address-type
+             / signature-type
+             / boolean-type
+
+array-type = "[" ws plaintext-type ws ";" ws u32-literal ws "]"
+
+plaintext-type = literal-type / array-type / identifier
+
+value-type = plaintext-type %s".constant"
+           / plaintext-type %s".public"
+           / plaintext-type %s".private"
+           / identifier %s".record"
+           / locator %s".record"
+           / locator %s".future"
+
+mapping-type = plaintext-type %s".public"
+
+finalize-type = plaintext-type %s".public"
+              / locator %s".future"
+
+entry-type = plaintext-type ( %s".constant" / %s".public" / %s".private" )
+
+register-type = locator %s".future"
+              / locator %s".record"
+              / identifier %s".record"
+              / plaintext-type
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+mapping = cws %s"mapping" ws identifier ws ":"
+          mapping-key
+          mapping-value
+
+mapping-key = cws %s"key" ws %s"as" ws mapping-type ws ";"
+
+mapping-value = cws %s"value" ws %s"as" ws mapping-type ws ";"
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+struct = cws %s"struct" ws identifier ws ":" 1*tuple
+
+tuple = cws identifier ws %s"as" ws plaintext-type ws ";"
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+record = cws %s"record" ws identifier ws ":"
+         cws %s"owner" ws %s"as" ws
+         ( %s"address.public" / %s"address.private" ) ws ";"
+         *entry
+
+entry = cws identifier ws %s"as" ws entry-type ws ";"
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+unary-op = %s"abs" / %s"abs.w"
+         / %s"double"
+         / %s"inv"
+         / %s"neg"
+         / %s"not"
+         / %s"square"
+         / %s"sqrt"
+
+binary-op = %s"add" / %s"add.w"
+          / %s"sub" / %s"sub.w"
+          / %s"mul" / %s"mul.w"
+          / %s"div" / %s"div.w"
+          / %s"rem" / %s"rem.w"
+          / %s"mod"
+          / %s"pow" / %s"pow.w"
+          / %s"shl" / %s"shl.w"
+          / %s"shr" / %s"shr.w"
+          / %s"and"
+          / %s"or"
+          / %s"xor"
+          / %s"nand"
+          / %s"nor"
+          / %s"gt"
+          / %s"gte"
+          / %s"lt"
+          / %s"lte"
+
+is-op = %s"is.eq" / %s"is.neq"
+
+assert-op = %s"assert.eq" / %s"assert.neq"
+
+commit-op = %s"commit.bhp" ( "256" / "512" / "768" / "1024" )
+          / %s"commit.ped" ( "64" / "128" )
+
+hash1-op = %s"hash.bhp" ( "256" / "512" / "768" / "1024" )
+         / %s"hash.ped" ( "64" / "128" )
+         / %s"hash.psd" ( "2" / "4" / "8" )
+         / %s"hash.keccak" ( "256" / "384" / "512" )
+         / %s"hash.sha3_" ( "256" / "384" / "512" )
+
+hash2-op = %s"hash_many.psd" ( "2" / "4" / "8" )
+
+cast-op = %s"cast" / %s"cast.lossy"
+
+cast-destination = plaintext-type
+                 / identifier
+                 / locator
+                 / %s"group.x"
+                 / %s"group.y"
+
+unary = unary-op ws ( operand ws ) %s"into" ws register-access
+
+binary = binary-op ws 2( operand ws ) %s"into" ws register-access
+
+ternary = %s"ternary" ws 3( operand ws ) %s"into" ws register-access
+
+is = is-op ws operand ws operand ws %s"into" ws register-access
+
+assert = assert-op ws operand ws operand
+
+commit = commit-op ws operand ws operand
+         ws %s"into" ws register-access
+         ws %s"as" ws ( address-type / field-type / group-type )
+
+hash1 = hash1-op ws operand
+        ws %s"into" ws register-access
+        ws %s"as" ws
+        ( arithmetic-type
+        / address-type
+        / signature-type
+        / array-type
+        / identifier )
+
+hash2 = hash2-op ws operand ws operand
+        ws %s"into" ws register-access
+        ws %s"as" ws
+        ( arithmetic-type
+        / address-type
+        / signature-type
+        / array-type
+        / identifier )
+
+hash = hash1 / hash2
+
+signverify = %s"sign.verify" ws operand ws operand ws operand
+             ws %s"into" ws register-access
+
+cast = cast-op 1*( ws operand )
+       ws %s"into" ws register-access ws %s"as" ws cast-destination
+
+call = %s"call" ws ( locator / identifier ) ws *( ws operand )
+       ws [ %s"into" ws 1*( ws register-access ) ]
+
+async = cws %s"async" ws identifier *( ws operand )
+        ws %s"into" ws register-access ws
+
+instruction = cws
+              ( unary
+              / binary
+              / ternary
+              / is
+              / assert
+              / commit
+              / hash
+              / signverify
+              / cast
+              / call
+              / async )
+              ws ";"
+
+contains = cws %s"contains"
+           ws identifier "[" ws operand ws "]"
+           ws %s"into" ws register-access ws ";"
+
+get = cws %s"get"
+      ws identifier "[" ws operand ws "]"
+      ws %s"into" ws register-access ws ";"
+
+get-or-use = cws %s"get.or_use"
+             ws identifier "[" ws operand ws "]"
+             ws operand
+             ws %s"into" ws register-access ws ";"
+
+set = cws %s"set"
+      ws operand
+      ws %s"into" ws identifier "[" ws operand ws "]" ws ";"
+
+remove = cws %s"remove"
+         ws identifier "[" ws operand ws "]" ws ";"
+
+random  = cws %s"rand.chacha"
+          *2( ws operand )
+          ws %s"into" ws register-access
+          ws %s"as" ws
+          ( arithmetic-type
+          / address-type
+          / signature-type
+          / boolean-type )
+          ws ";"
+
+label = identifier
+
+position = cws %s"position" ws label ws ";"
+
+branch-op = %s"branch.eq" / %s"branch.neq"
+
+branch = cws branch-op ws operand ws operand ws %s"to" ws label ws ";"
+
+await = cws %s"await" ws register-access ws ";"
+
+command = contains
+        / get
+        / get-or-use
+        / set
+        / remove
+        / random
+        / position
+        / branch
+        / await
+        / instruction
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+closure = cws %s"closure" ws identifier ws ":"
+          *closure-input
+          1*instruction
+          *closure-output
+
+closure-input = cws %s"input" ws register
+                ws %s"as" ws register-type ws ";"
+
+closure-output = cws %s"output" ws operand
+                 ws %s"as" ws register-type ws ";"
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+function = cws %s"function" ws identifier ws ":"
+           *function-input
+           *instruction
+           *function-output
+           [ finalize ]
+
+function-input = cws %s"input" ws register
+                 ws %s"as" ws value-type ws ";"
+
+function-output = cws %s"output" ws operand
+                  ws %s"as" ws value-type ws ";"
+
+finalize = cws %s"finalize" ws identifier ws ":"
+           *finalize-input
+           1*command
+
+finalize-input = cws %s"input" ws register
+                 ws %s"as" ws finalize-type ws ";"
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+program = cws %s"program" ws program-id ws ";"
+          1*( mapping / struct / record / closure / function )
+          cws
