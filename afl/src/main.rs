@@ -55,7 +55,21 @@ fn main() {
             return;
         }
 
-        if cfg!(any(feature = "authorize", feature = "execute")) {
+        if cfg!(any(feature = "deploy", feature = "verify_deployment", feature = "full")) {
+            // Attempt to deploy the program.
+            let Ok(deployment) = process.deploy::<CurrentAleo, _>(&program, rng) else {
+                return;
+            };
+
+            if cfg!(any(feature = "verify_deployment", feature = "full")) {
+                // Attempt to verify the deployment.
+                if process.verify_deployment::<CurrentAleo, _>(&deployment, rng).is_err() {
+                    return;
+                }
+            }
+        }
+
+        if cfg!(any(feature = "authorize", feature = "execute", feature = "full")) {
             // Process all the functions.
             for function in program.functions().values() {
                 // Sample inputs applicable to the given functions.
@@ -88,20 +102,10 @@ fn main() {
                     return;
                 };
 
-                if cfg!(feature = "execute") {
+                if cfg!(any(feature = "execute", feature = "full")) {
                     // Attempt to execute the process (which will eventually fail due to lack of key synthesis).
                     let _response_and_trace = process.execute::<CurrentAleo, _>(authorization, rng);
                 }
-            }
-        } else if cfg!(any(feature = "deploy", feature = "verify_deployment")) {
-            // Attempt to deploy the program.
-            let Ok(deployment) = process.deploy::<CurrentAleo, _>(&program, rng) else {
-                return;
-            };
-
-            if cfg!(feature = "verify_deployment") {
-            // Attempt to verify the deployment.
-                let _ = process.verify_deployment::<CurrentAleo, _>(&deployment, rng);
             }
         }
     });

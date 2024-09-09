@@ -8,6 +8,7 @@ authorize = []
 execute = []
 deploy = []
 verify_deployment = []
+full = []
 
 [dependencies]
 afl = "0.15"
