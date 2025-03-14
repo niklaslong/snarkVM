@@ -66,6 +66,11 @@ name = "kary_merkle_tree"
 path = "benches/kary_merkle_tree.rs"
 harness = false
 
+[[bench]]
+name = "transfer_public"
+path = "benches/transfer_public.rs"
+harness = false
+
 [dependencies.algorithms]
 package = "snarkvm-algorithms"
 path = "../algorithms"
