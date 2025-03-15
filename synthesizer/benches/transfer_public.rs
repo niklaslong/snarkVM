@@ -99,7 +99,7 @@ fn transfer_public_to_private(c: &mut Criterion) {
 
 criterion_group! {
     name = transfer_public;
-    config = Criterion::default().sample_size(100);
+    config = Criterion::default().sample_size(1000);
     targets = transfer_public_to_private
 }
 criterion_main!(transfer_public);
