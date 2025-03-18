@@ -13,11 +13,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use circuit::{AleoV0, Plaintext};
+use circuit::AleoV0;
 use console::{
     account::{Address, PrivateKey},
     network::MainnetV0,
-    program::{Identifier, Record, Value},
+    program::{Identifier, Plaintext, Record, Value},
 };
 use ledger_query::Query;
 use ledger_store::{BlockStore, helpers::memory::BlockMemory};
@@ -92,86 +92,76 @@ fn transfer_public_to_private_with_fee_public() {
     assert!(process.verify_fee(&fee, execution_id).is_ok());
 }
 
-// #[ignore]
-// #[test]
-// fn transfer_public_to_private_with_fee_private() {
-//     let mut rng = TestRng::default();
+#[test]
+fn transfer_public_to_private_with_fee_private() {
+    let mut rng = TestRng::default();
 
-//     // Initialize a new caller account.
-//     let private_key = PrivateKey::<CurrentNetwork>::new(&mut rng).unwrap();
-//     let caller = Address::try_from(&private_key).unwrap();
+    let (block, transaction, private_key) = ledger_test_helpers::sample_genesis_block_and_components(&mut rng);
+    let caller = Address::try_from(&private_key).unwrap();
 
-//     // Initialize a new program.
-//     let program = Program::<CurrentNetwork>::credits().unwrap();
+    // Initialize a new program.
+    let program = Program::<CurrentNetwork>::credits().unwrap();
 
-//     // Declare the inputs.
-//     let r0 = Value::<CurrentNetwork>::from_str(&format!("{caller}")).unwrap();
-//     let r1 = Value::<CurrentNetwork>::from_str("1_500_000_000_000_000_u64").unwrap();
+    // Declare the inputs.
+    let r0 = Value::<CurrentNetwork>::from_str(&format!("{caller}")).unwrap();
+    let r1 = Value::<CurrentNetwork>::from_str("1_500_000_000_000_000_u64").unwrap();
 
-//     // Construct a new process.
-//     let process = Process::load().unwrap();
+    // Construct a new process.
+    let process = Process::load().unwrap();
 
-//     /* AUTHORIZE */
-//     // Authorize the function call.
-//     let authorization = process
-//         .authorize::<CurrentAleo, _>(
-//             &private_key,
-//             program.id(),
-//             Identifier::from_str("transfer_public_to_private").unwrap(),
-//             [r0, r1].iter(),
-//             &mut rng,
-//         )
-//         .unwrap();
+    // Authorize function.
+    let authorization = process
+        .authorize::<CurrentAleo, _>(
+            &private_key,
+            program.id(),
+            Identifier::from_str("transfer_public_to_private").unwrap(),
+            [r0, r1].iter(),
+            &mut rng,
+        )
+        .unwrap();
 
-//     // Authorize the fee.
-//     let execution_id = authorization.to_execution_id().unwrap();
+    // Authorize fee.
+    let credits = transaction.records().next().unwrap().1.clone();
+    let credits = credits.decrypt(&private_key.try_into().unwrap()).unwrap();
+    let base_fee_in_microcredits = 10_000_000;
+    let priority_fee_in_microcredits = 1_000;
+    let execution_id = authorization.to_execution_id().unwrap();
 
-//     // Sample a credits record.
-//     let base_fee_in_microcredits = 300000u64;
-//     let priority_fee_in_microcredits = 0u64;
-//     let fee_in_microcredits = base_fee_in_microcredits.saturating_add(priority_fee_in_microcredits);
+    let fee_authorization = process
+        .authorize_fee_private::<CurrentAleo, _>(
+            &private_key,
+            credits,
+            base_fee_in_microcredits,
+            priority_fee_in_microcredits,
+            execution_id,
+            &mut rng,
+        )
+        .unwrap();
 
-//     // Sample a credits record.
-//     let fee_in_microcredits = base_fee_in_microcredits.saturating_add(priority_fee_in_microcredits);
-//     let credits = Record::<CurrentAleo, Plaintext<_>>::from_str(&format!(
-//         "{{ owner: {caller}.private, microcredits: {fee_in_microcredits}u64.private, _nonce: 0group.public }}"
-//     ))
-//     .unwrap();
+    // Set up blockstore, query and locator.
+    let block_store = BlockStore::<CurrentNetwork, BlockMemory<_>>::open(None).unwrap();
+    block_store.insert(&FromStr::from_str(&block.to_string()).unwrap()).unwrap();
 
-//     let fee_authorization = process
-//         .authorize_fee_private::<CurrentAleo, _>(
-//             &private_key,
-//             credits,
-//             base_fee_in_microcredits,
-//             priority_fee_in_microcredits,
-//             execution_id,
-//             &mut rng,
-//         )
-//         .unwrap();
+    let query = Query::from(block_store);
+    let locator = {
+        let request = authorization.peek_next().unwrap();
+        console::program::Locator::new(*request.program_id(), *request.function_name())
+    };
 
-//     /* EXECUTE FUNCTION */
-//     // Construct the query and the locator of the main function.
-//     let block_store = BlockStore::<CurrentNetwork, BlockMemory<_>>::open(None).unwrap();
-//     let query = Query::from(block_store);
-//     let locator = {
-//         let request = authorization.peek_next().unwrap();
-//         console::program::Locator::new(*request.program_id(), *request.function_name())
-//     };
+    // Execute function.
+    let (_response, mut trace) = process.execute::<CurrentAleo, _>(authorization, &mut rng).unwrap();
+    trace.prepare(query.clone()).unwrap();
+    let execution = trace.prove_execution::<CurrentAleo, _>(&locator.to_string(), &mut rng).unwrap();
 
-//     // Execute and prove.
-//     let (_response, mut trace) = process.execute::<CurrentAleo, _>(authorization, &mut rng).unwrap();
-//     trace.prepare(query.clone()).unwrap();
-//     let execution = trace.prove_execution::<CurrentAleo, _>(&locator.to_string(), &mut rng).unwrap();
+    assert!(process.verify_execution(&execution).is_ok());
 
-//     assert!(process.verify_execution(&execution).is_ok());
+    // Execute fee.
+    let (_, mut trace) = process.execute::<CurrentAleo, _>(fee_authorization, &mut rng).unwrap();
+    trace.prepare(query).unwrap();
+    let fee = trace.prove_fee::<CurrentAleo, _>(&mut rng).unwrap();
 
-//     /* EXECUTE FEE */
-//     let (_, mut trace) = process.execute::<CurrentAleo, _>(fee_authorization, &mut rng).unwrap();
-//     trace.prepare(query).unwrap();
-//     let fee = trace.prove_fee::<CurrentAleo, _>(&mut rng).unwrap();
-
-//     assert!(process.verify_fee(&fee, execution_id).is_ok());
-// }
+    assert!(process.verify_fee(&fee, execution_id).is_ok());
+}
 
 #[ignore]
 #[test]

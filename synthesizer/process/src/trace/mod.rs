@@ -274,6 +274,8 @@ impl<N: Network> Trace<N> {
         // Initialize a vector for the batch inclusion assignments.
         let mut batch_inclusions = Vec::with_capacity(inclusion_assignments.len());
 
+        println!("INCLUSION ASSIGNMENT LEN: {}", inclusion_assignments.len());
+
         for assignment in inclusion_assignments.iter() {
             // Ensure the global state root is the same across iterations.
             if global_state_root != assignment.state_path.global_state_root() {
