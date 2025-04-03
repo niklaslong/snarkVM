@@ -15,6 +15,14 @@
 
 #![allow(non_snake_case)]
 
+use anyhow::{Result, anyhow, ensure};
+#[cfg(feature = "serial")]
+use itertools::Itertools;
+#[cfg(not(feature = "serial"))]
+use rayon::prelude::*;
+use snarkvm_fields::{Field, PrimeField};
+use snarkvm_utilities::{cfg_into_iter, cfg_iter, cfg_iter_mut, serialize::*};
+
 use crate::{
     fft::{EvaluationDomain, Evaluations as EvaluationsOnDomain},
     polycommit::sonic_pc::LabeledPolynomial,
@@ -24,15 +32,6 @@ use crate::{
         ahp::{AHPForR1CS, CircuitId, indexer::Matrix},
     },
 };
-use snarkvm_fields::{Field, PrimeField};
-use snarkvm_utilities::{cfg_into_iter, cfg_iter, cfg_iter_mut, serialize::*};
-
-use anyhow::{Result, anyhow, ensure};
-
-#[cfg(feature = "serial")]
-use itertools::Itertools;
-#[cfg(not(feature = "serial"))]
-use rayon::prelude::*;
 
 // This function converts a matrix output by Zexe's constraint infrastructure
 // to the one used in this crate.
@@ -269,11 +268,13 @@ pub(crate) fn transpose<F: PrimeField>(
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-    use crate::snark::varuna::{VarunaHidingMode, num_non_zero};
+    use std::{borrow::Cow, collections::HashMap};
+
     use snarkvm_curves::bls12_377::Fr as F;
     use snarkvm_fields::{One, Zero};
-    use std::{borrow::Cow, collections::HashMap};
+
+    use super::*;
+    use crate::snark::varuna::{VarunaHidingMode, num_non_zero};
 
     fn entry(matrix: &Matrix<F>, row: usize, col: usize) -> F {
         matrix[row].iter().find_map(|(f, i)| (i == &col).then_some(*f)).unwrap_or_else(F::zero)

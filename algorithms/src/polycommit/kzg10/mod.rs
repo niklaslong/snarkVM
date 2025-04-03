@@ -20,22 +20,22 @@
 //! proposed by Kate, Zaverucha, and Goldberg ([KZG11](http://cacr.uwaterloo.ca/techreports/2010/cacr2010-10.pdf)).
 //! This construction achieves extractability in the algebraic group model (AGM).
 
+use core::{marker::PhantomData, ops::Mul};
+
+use anyhow::{Result, anyhow, ensure};
+use itertools::Itertools;
+use rand_core::RngCore;
+#[cfg(not(feature = "serial"))]
+use rayon::prelude::*;
+use snarkvm_curves::traits::{AffineCurve, PairingCurve, PairingEngine, ProjectiveCurve};
+use snarkvm_fields::{One, PrimeField, Zero};
+use snarkvm_utilities::{BitIteratorBE, cfg_iter, cfg_iter_mut, rand::Uniform};
+
 use crate::{
     fft::{DensePolynomial, Polynomial},
     msm::VariableBase,
     polycommit::PCError,
 };
-use snarkvm_curves::traits::{AffineCurve, PairingCurve, PairingEngine, ProjectiveCurve};
-use snarkvm_fields::{One, PrimeField, Zero};
-use snarkvm_utilities::{BitIteratorBE, cfg_iter, cfg_iter_mut, rand::Uniform};
-
-use anyhow::{Result, anyhow, ensure};
-use core::{marker::PhantomData, ops::Mul};
-use itertools::Itertools;
-use rand_core::RngCore;
-
-#[cfg(not(feature = "serial"))]
-use rayon::prelude::*;
 
 mod data_structures;
 pub use data_structures::*;
@@ -477,11 +477,12 @@ fn convert_to_bigints<F: PrimeField>(p: &[F]) -> Vec<F::BigInteger> {
 mod tests {
     #![allow(non_camel_case_types)]
     #![allow(clippy::needless_borrow)]
-    use super::*;
+    use std::borrow::Cow;
+
     use snarkvm_curves::bls12_377::{Bls12_377, Fr};
     use snarkvm_utilities::{FromBytes, ToBytes, rand::TestRng};
 
-    use std::borrow::Cow;
+    use super::*;
 
     type KZG_Bls12_377 = KZG10<Bls12_377>;
 

@@ -13,13 +13,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use crate::r1cs::Variable;
-use snarkvm_fields::Field;
-
 use std::{
     cmp::Ordering,
     ops::{Add, AddAssign, Mul, MulAssign, Neg, Sub},
 };
+
+use snarkvm_fields::Field;
+
+use crate::r1cs::Variable;
 
 /// This represents a linear combination of some variables, with coefficients
 /// in the field `F`.
@@ -435,10 +436,10 @@ impl<F: Field> Sub<(F, LinearCombination<F>)> for LinearCombination<F> {
 
 #[cfg(test)]
 mod tests {
-    use crate::r1cs::Index;
+    use snarkvm_curves::bls12_377::Fr;
 
     use super::*;
-    use snarkvm_curves::bls12_377::Fr;
+    use crate::r1cs::Index;
 
     #[test]
     fn linear_combination_append() {

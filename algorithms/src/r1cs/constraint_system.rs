@@ -13,10 +13,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use crate::r1cs::{Index, LinearCombination, Namespace, Variable, errors::SynthesisError};
+use std::marker::PhantomData;
+
 use snarkvm_fields::Field;
 
-use std::marker::PhantomData;
+use crate::r1cs::{Index, LinearCombination, Namespace, Variable, errors::SynthesisError};
 
 /// Computations are expressed in terms of rank-1 constraint systems (R1CS).
 /// The `generate_constraints` method is called to generate constraints for

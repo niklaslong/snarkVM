@@ -14,6 +14,11 @@
 // limitations under the License.
 
 use core::marker::PhantomData;
+use std::collections::BTreeMap;
+
+use anyhow::{Result, ensure};
+use smallvec::SmallVec;
+use snarkvm_fields::PrimeField;
 
 use crate::{
     AlgebraicSponge,
@@ -29,10 +34,6 @@ use crate::{
         verifier::CircuitSpecificState,
     },
 };
-use anyhow::{Result, ensure};
-use smallvec::SmallVec;
-use snarkvm_fields::PrimeField;
-use std::collections::BTreeMap;
 
 impl<TargetField: PrimeField, SM: SNARKMode> AHPForR1CS<TargetField, SM> {
     /// Output the first message and next round state.

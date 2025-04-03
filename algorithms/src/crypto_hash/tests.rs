@@ -13,13 +13,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use crate::{AlgebraicSponge, DuplexSpongeMode, crypto_hash::PoseidonSponge};
-use snarkvm_curves::bls12_377::Fr;
-use snarkvm_fields::{PoseidonDefaultField, PoseidonGrainLFSR};
+use std::{path::PathBuf, sync::Arc};
 
 use anyhow::Result;
 use itertools::Itertools;
-use std::{path::PathBuf, sync::Arc};
+use snarkvm_curves::bls12_377::Fr;
+use snarkvm_fields::{PoseidonDefaultField, PoseidonGrainLFSR};
+
+use crate::{AlgebraicSponge, DuplexSpongeMode, crypto_hash::PoseidonSponge};
 
 #[track_caller]
 fn expect_file_with_name(name: impl ToString, val: impl std::fmt::Debug) {

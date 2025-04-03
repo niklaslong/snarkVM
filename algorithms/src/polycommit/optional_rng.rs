@@ -14,6 +14,7 @@
 // limitations under the License.
 
 use core::num::NonZeroU32;
+
 use rand_core::RngCore;
 
 /// `OptionalRng` is a hack that is necessary because `Option<&mut R>` is not implicitly reborrowed

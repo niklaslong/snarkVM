@@ -13,6 +13,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use std::collections::BTreeMap;
+
+use anyhow::{Result, ensure};
+use itertools::Itertools;
+use rand_core::RngCore;
+#[cfg(not(feature = "serial"))]
+use rayon::prelude::*;
+use snarkvm_fields::PrimeField;
+use snarkvm_utilities::{ExecutionPool, cfg_iter};
+
 use crate::{
     fft::{
         DensePolynomial,
@@ -32,16 +42,6 @@ use crate::{
         selectors::apply_randomized_selector,
     },
 };
-use snarkvm_fields::PrimeField;
-use snarkvm_utilities::{ExecutionPool, cfg_iter};
-
-use anyhow::{Result, ensure};
-use itertools::Itertools;
-use rand_core::RngCore;
-use std::collections::BTreeMap;
-
-#[cfg(not(feature = "serial"))]
-use rayon::prelude::*;
 
 struct LinevalInstance<F: PrimeField> {
     h_1_i: DensePolynomial<F>,

@@ -13,10 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use crate::{
-    polycommit::sonic_pc,
-    snark::varuna::{CircuitVerifyingKey, SNARKMode, ahp::indexer::*},
-};
+use std::{cmp::Ordering, sync::Arc};
+
 use snarkvm_curves::PairingEngine;
 use snarkvm_utilities::{
     FromBytes,
@@ -25,7 +23,10 @@ use snarkvm_utilities::{
     serialize::*,
 };
 
-use std::{cmp::Ordering, sync::Arc};
+use crate::{
+    polycommit::sonic_pc,
+    snark::varuna::{CircuitVerifyingKey, SNARKMode, ahp::indexer::*},
+};
 
 /// Proving key for a specific circuit (i.e., R1CS matrices).
 #[derive(Clone, Debug)]

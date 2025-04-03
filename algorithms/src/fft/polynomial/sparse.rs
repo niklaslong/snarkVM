@@ -15,11 +15,12 @@
 
 //! A sparse polynomial represented in coefficient form.
 
-use crate::fft::{EvaluationDomain, Evaluations, Polynomial};
+use std::{collections::BTreeMap, fmt};
+
 use snarkvm_fields::{Field, PrimeField};
 use snarkvm_utilities::serialize::*;
 
-use std::{collections::BTreeMap, fmt};
+use crate::fft::{EvaluationDomain, Evaluations, Polynomial};
 
 /// Stores a sparse polynomial in coefficient form.
 #[derive(Clone, PartialEq, Eq, Hash, Default, CanonicalSerialize, CanonicalDeserialize)]
@@ -172,9 +173,10 @@ impl<'a, F: PrimeField> core::ops::AddAssign<(F, &'a Self)> for SparsePolynomial
 
 #[cfg(test)]
 mod tests {
-    use crate::fft::{DensePolynomial, EvaluationDomain, SparsePolynomial};
     use snarkvm_curves::bls12_377::Fr;
     use snarkvm_fields::One;
+
+    use crate::fft::{DensePolynomial, EvaluationDomain, SparsePolynomial};
 
     #[test]
     fn evaluate_over_domain() {

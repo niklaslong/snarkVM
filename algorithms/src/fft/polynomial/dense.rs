@@ -15,23 +15,22 @@
 
 //! A polynomial represented in coefficient form.
 
-use super::PolyMultiplier;
-use crate::fft::{EvaluationDomain, Evaluations, Polynomial};
-use snarkvm_fields::{Field, PrimeField};
-use snarkvm_utilities::{cfg_iter_mut, serialize::*};
-
-use anyhow::Result;
-use num_traits::CheckedDiv;
-use rand::Rng;
 use std::{
     fmt,
     ops::{Add, AddAssign, Deref, DerefMut, Div, Mul, MulAssign, Neg, Sub, SubAssign},
 };
 
+use anyhow::Result;
 use itertools::Itertools;
-
+use num_traits::CheckedDiv;
+use rand::Rng;
 #[cfg(not(feature = "serial"))]
 use rayon::prelude::*;
+use snarkvm_fields::{Field, PrimeField};
+use snarkvm_utilities::{cfg_iter_mut, serialize::*};
+
+use super::PolyMultiplier;
+use crate::fft::{EvaluationDomain, Evaluations, Polynomial};
 
 /// Stores a polynomial in coefficient form.
 #[derive(Clone, PartialEq, Eq, Hash, Default, CanonicalSerialize, CanonicalDeserialize)]
@@ -509,13 +508,13 @@ impl<F: Field> DerefMut for DensePolynomial<F> {
 
 #[cfg(test)]
 mod tests {
-    use crate::fft::polynomial::*;
     use num_traits::CheckedDiv;
+    use rand::RngCore;
     use snarkvm_curves::bls12_377::Fr;
     use snarkvm_fields::{Field, One, Zero};
     use snarkvm_utilities::rand::{TestRng, Uniform};
 
-    use rand::RngCore;
+    use crate::fft::polynomial::*;
 
     #[test]
     fn double_polynomials_random() {

@@ -15,6 +15,13 @@
 
 use std::collections::BTreeMap;
 
+use itertools::Itertools;
+use rand_core::RngCore;
+#[cfg(not(feature = "serial"))]
+use rayon::prelude::*;
+use snarkvm_fields::PrimeField;
+use snarkvm_utilities::{cfg_par_bridge, cfg_reduce};
+
 use crate::{
     fft::DensePolynomial,
     polycommit::sonic_pc::{LabeledPolynomial, PolynomialInfo, PolynomialLabel},
@@ -24,14 +31,6 @@ use crate::{
         prover,
     },
 };
-use snarkvm_fields::PrimeField;
-use snarkvm_utilities::{cfg_par_bridge, cfg_reduce};
-
-use itertools::Itertools;
-use rand_core::RngCore;
-
-#[cfg(not(feature = "serial"))]
-use rayon::prelude::*;
 
 impl<F: PrimeField, SM: SNARKMode> AHPForR1CS<F, SM> {
     /// Output the number of oracles sent by the prover in this round.

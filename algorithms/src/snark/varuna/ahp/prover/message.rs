@@ -15,9 +15,10 @@
 
 use std::collections::BTreeMap;
 
-use crate::snark::varuna::{CircuitId, verifier::BatchCombiners};
 use snarkvm_fields::PrimeField;
 use snarkvm_utilities::{ToBytes, Write, error, serialize::*};
+
+use crate::snark::varuna::{CircuitId, verifier::BatchCombiners};
 
 #[derive(Clone, Debug, Default, PartialEq, Eq, CanonicalSerialize, CanonicalDeserialize)]
 pub struct MatrixSums<F: PrimeField> {

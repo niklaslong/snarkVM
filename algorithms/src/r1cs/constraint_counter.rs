@@ -13,8 +13,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use crate::r1cs::{ConstraintSystem, Index, LinearCombination, Variable, errors::SynthesisError};
 use snarkvm_fields::Field;
+
+use crate::r1cs::{ConstraintSystem, Index, LinearCombination, Variable, errors::SynthesisError};
 
 /// Constraint counter for testing purposes.
 #[derive(Default)]

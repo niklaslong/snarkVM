@@ -13,10 +13,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use crate::r1cs::{ConstraintSynthesizer, ConstraintSystem, SynthesisError};
+use rand::{CryptoRng, Rng};
 use snarkvm_fields::Field;
 
-use rand::{CryptoRng, Rng};
+use crate::r1cs::{ConstraintSynthesizer, ConstraintSystem, SynthesisError};
 
 #[doc(hidden)]
 #[derive(Clone)]

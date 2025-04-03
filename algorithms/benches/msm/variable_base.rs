@@ -13,12 +13,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use criterion::Criterion;
 use snarkvm_algorithms::msm::*;
 use snarkvm_curves::AffineCurve;
 use snarkvm_fields::PrimeField;
 use snarkvm_utilities::TestRng;
-
-use criterion::Criterion;
 
 #[macro_use]
 extern crate criterion;

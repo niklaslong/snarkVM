@@ -13,7 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use crate::msm::*;
 use snarkvm_curves::{
     bls12_377::{Fr, G1Projective},
     traits::{AffineCurve, ProjectiveCurve},
@@ -23,6 +22,8 @@ use snarkvm_utilities::{
     BitIteratorBE,
     rand::{TestRng, Uniform},
 };
+
+use crate::msm::*;
 
 fn naive_variable_base_msm<G: AffineCurve>(
     bases: &[G],

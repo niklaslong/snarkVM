@@ -13,19 +13,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use super::{LabeledPolynomial, PolynomialInfo};
-use crate::{crypto_hash::sha256::sha256, fft::EvaluationDomain, polycommit::kzg10};
-use snarkvm_curves::PairingEngine;
-use snarkvm_fields::{ConstraintFieldError, Field, PrimeField, ToConstraintField};
-use snarkvm_utilities::{FromBytes, ToBytes, error, serialize::*};
-
-use hashbrown::HashMap;
 use std::{
     borrow::{Borrow, Cow},
     collections::{BTreeMap, BTreeSet},
     fmt,
     ops::{AddAssign, MulAssign, SubAssign},
 };
+
+use hashbrown::HashMap;
+use snarkvm_curves::PairingEngine;
+use snarkvm_fields::{ConstraintFieldError, Field, PrimeField, ToConstraintField};
+use snarkvm_utilities::{FromBytes, ToBytes, error, serialize::*};
+
+use super::{LabeledPolynomial, PolynomialInfo};
+use crate::{crypto_hash::sha256::sha256, fft::EvaluationDomain, polycommit::kzg10};
 
 /// `UniversalParams` are the universal parameters for the KZG10 scheme.
 pub type UniversalParams<E> = kzg10::UniversalParams<E>;

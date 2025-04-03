@@ -19,10 +19,10 @@ pub mod standard;
 #[cfg(target_arch = "x86_64")]
 pub mod prefetch;
 
+use core::any::TypeId;
+
 use snarkvm_curves::{bls12_377::G1Affine, traits::AffineCurve};
 use snarkvm_fields::PrimeField;
-
-use core::any::TypeId;
 
 pub struct VariableBase;
 
@@ -70,13 +70,13 @@ impl VariableBase {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    #[cfg(all(feature = "cuda", target_arch = "x86_64"))]
+    use snarkvm_curves::ProjectiveCurve;
     use snarkvm_curves::bls12_377::{Fr, G1Affine};
     use snarkvm_fields::PrimeField;
     use snarkvm_utilities::rand::TestRng;
 
-    #[cfg(all(feature = "cuda", target_arch = "x86_64"))]
-    use snarkvm_curves::ProjectiveCurve;
+    use super::*;
 
     fn create_scalar_bases<G: AffineCurve<ScalarField = F>, F: PrimeField>(
         rng: &mut TestRng,

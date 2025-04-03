@@ -25,6 +25,19 @@
 //! This allows us to perform polynomial operations in O(n)
 //! by performing an O(n log n) FFT over such a domain.
 
+use std::{borrow::Cow, fmt};
+
+use anyhow::{Result, ensure};
+#[cfg(feature = "serial")]
+use itertools::Itertools;
+use rand::Rng;
+#[cfg(not(feature = "serial"))]
+use rayon::prelude::*;
+use snarkvm_fields::{FftField, FftParameters, Field, batch_inversion};
+#[cfg(not(feature = "serial"))]
+use snarkvm_utilities::max_available_threads;
+use snarkvm_utilities::{execute_with_max_available_threads, serialize::*};
+
 use crate::{
     cfg_chunks_mut,
     cfg_into_iter,
@@ -32,21 +45,6 @@ use crate::{
     cfg_iter_mut,
     fft::{DomainCoeff, SparsePolynomial},
 };
-use snarkvm_fields::{FftField, FftParameters, Field, batch_inversion};
-#[cfg(not(feature = "serial"))]
-use snarkvm_utilities::max_available_threads;
-use snarkvm_utilities::{execute_with_max_available_threads, serialize::*};
-
-use rand::Rng;
-use std::{borrow::Cow, fmt};
-
-use anyhow::{Result, ensure};
-
-#[cfg(not(feature = "serial"))]
-use rayon::prelude::*;
-
-#[cfg(feature = "serial")]
-use itertools::Itertools;
 
 /// Returns the ceiling of the base-2 logarithm of `x`.
 ///
@@ -934,13 +932,14 @@ impl<F: FftField> IFFTPrecomputation<F> {
 
 #[cfg(test)]
 mod tests {
-    #[cfg(all(feature = "cuda", target_arch = "x86_64"))]
-    use crate::fft::domain::FFTOrder;
-    use crate::fft::{DensePolynomial, EvaluationDomain};
     use rand::Rng;
     use snarkvm_curves::bls12_377::Fr;
     use snarkvm_fields::{FftField, Field, One, Zero};
     use snarkvm_utilities::{TestRng, Uniform};
+
+    #[cfg(all(feature = "cuda", target_arch = "x86_64"))]
+    use crate::fft::domain::FFTOrder;
+    use crate::fft::{DensePolynomial, EvaluationDomain};
 
     #[test]
     fn vanishing_polynomial_evaluation() {

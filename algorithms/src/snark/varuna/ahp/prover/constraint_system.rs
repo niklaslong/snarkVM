@@ -13,8 +13,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use crate::r1cs::{ConstraintSystem as CS, Index as VarIndex, LinearCombination, Variable, errors::SynthesisError};
 use snarkvm_fields::Field;
+
+use crate::r1cs::{ConstraintSystem as CS, Index as VarIndex, LinearCombination, Variable, errors::SynthesisError};
 
 pub(crate) struct ConstraintSystem<F: Field> {
     pub(crate) public_variables: Vec<F>,

@@ -13,12 +13,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#[cfg(not(feature = "serial"))]
+use rayon::prelude::*;
 use snarkvm_curves::traits::ProjectiveCurve;
 use snarkvm_fields::{FieldParameters, PrimeField};
 use snarkvm_utilities::{ToBits, cfg_into_iter, cfg_iter, cfg_iter_mut};
-
-#[cfg(not(feature = "serial"))]
-use rayon::prelude::*;
 
 pub struct FixedBase;
 

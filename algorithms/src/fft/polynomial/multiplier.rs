@@ -15,11 +15,11 @@
 
 use std::{borrow::Borrow, collections::BTreeMap};
 
-use crate::fft::domain::{FFTPrecomputation, IFFTPrecomputation};
+use snarkvm_utilities::{ExecutionPool, cfg_into_iter, cfg_iter, cfg_iter_mut, cfg_reduce_with};
 
 /// A struct that helps multiply a batch of polynomials
 use super::*;
-use snarkvm_utilities::{ExecutionPool, cfg_into_iter, cfg_iter, cfg_iter_mut, cfg_reduce_with};
+use crate::fft::domain::{FFTPrecomputation, IFFTPrecomputation};
 
 #[derive(Default)]
 pub struct PolyMultiplier<'a, F: PrimeField> {

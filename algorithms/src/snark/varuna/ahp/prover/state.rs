@@ -15,14 +15,15 @@
 
 use std::collections::BTreeMap;
 
+use anyhow::anyhow;
+use snarkvm_fields::PrimeField;
+
 use crate::{
     fft::{DensePolynomial, EvaluationDomain, Evaluations as EvaluationsOnDomain},
     polycommit::sonic_pc::LabeledPolynomial,
     r1cs::{SynthesisError, SynthesisResult},
     snark::varuna::{AHPError, AHPForR1CS, Circuit, SNARKMode},
 };
-use anyhow::anyhow;
-use snarkvm_fields::PrimeField;
 
 /// Circuit Specific State of the Prover
 pub struct CircuitSpecificState<F: PrimeField> {

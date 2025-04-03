@@ -13,24 +13,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use core::{convert::TryInto, marker::PhantomData, ops::Mul};
+use std::{
+    borrow::Borrow,
+    collections::{BTreeMap, BTreeSet},
+};
+
+use anyhow::{Result, bail, ensure};
+use hashbrown::HashMap;
+use itertools::Itertools;
+use rand_core::{RngCore, SeedableRng};
+use snarkvm_curves::traits::{AffineCurve, PairingCurve, PairingEngine, ProjectiveCurve};
+use snarkvm_fields::{One, Zero};
+
 use crate::{
     AlgebraicSponge,
     fft::DensePolynomial,
     msm::variable_base::VariableBase,
     polycommit::{PCError, kzg10, optional_rng::OptionalRng},
     srs::{UniversalProver, UniversalVerifier},
-};
-use hashbrown::HashMap;
-use itertools::Itertools;
-use snarkvm_curves::traits::{AffineCurve, PairingCurve, PairingEngine, ProjectiveCurve};
-use snarkvm_fields::{One, Zero};
-
-use anyhow::{Result, bail, ensure};
-use core::{convert::TryInto, marker::PhantomData, ops::Mul};
-use rand_core::{RngCore, SeedableRng};
-use std::{
-    borrow::Borrow,
-    collections::{BTreeMap, BTreeSet},
 };
 
 mod data_structures;
@@ -682,12 +683,12 @@ impl<E: PairingEngine, S: AlgebraicSponge<E::Fq, 2>> SonicKZG10<E, S> {
 mod tests {
     #![allow(non_camel_case_types)]
 
-    use super::{CommitterKey, SonicKZG10};
-    use crate::{crypto_hash::PoseidonSponge, polycommit::test_templates::*};
+    use rand::distributions::Distribution;
     use snarkvm_curves::bls12_377::{Bls12_377, Fq};
     use snarkvm_utilities::{FromBytes, ToBytes, rand::TestRng};
 
-    use rand::distributions::Distribution;
+    use super::{CommitterKey, SonicKZG10};
+    use crate::{crypto_hash::PoseidonSponge, polycommit::test_templates::*};
 
     type Sponge = PoseidonSponge<Fq, 2, 1>;
     type PC_Bls12_377 = SonicKZG10<Bls12_377, Sponge>;

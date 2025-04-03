@@ -13,17 +13,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use super::verifier::QueryPoints;
-use crate::fft::{DensePolynomial, EvaluationDomain};
-use snarkvm_fields::{PrimeField, batch_inversion};
-use snarkvm_utilities::{cfg_into_iter, cfg_iter_mut, serialize::*};
+use std::collections::{BTreeMap, HashSet};
 
 use anyhow::{Result, ensure};
 use itertools::Itertools;
-use std::collections::{BTreeMap, HashSet};
-
 #[cfg(not(feature = "serial"))]
 use rayon::prelude::*;
+use snarkvm_fields::{PrimeField, batch_inversion};
+use snarkvm_utilities::{cfg_into_iter, cfg_iter_mut, serialize::*};
+
+use super::verifier::QueryPoints;
+use crate::fft::{DensePolynomial, EvaluationDomain};
 
 /// Precompute a batch of selectors at challenges. We batch:
 /// - constraint domain selectors at alpha
@@ -124,11 +124,12 @@ pub(crate) fn apply_randomized_selector<F: PrimeField>(
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-    use crate::fft::Evaluations;
     use snarkvm_curves::bls12_377::fr::Fr;
     use snarkvm_fields::{One, Zero};
     use snarkvm_utilities::rand::TestRng;
+
+    use super::*;
+    use crate::fft::Evaluations;
 
     /// Given two domains H and K such that H \subseteq K,
     /// evaluate polynomial that outputs 0 on all elements in K \ H, but 1 on all elements of H.

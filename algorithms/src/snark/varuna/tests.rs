@@ -15,6 +15,14 @@
 
 #[cfg(any(test, feature = "test"))]
 mod varuna {
+    use std::collections::BTreeMap;
+
+    use snarkvm_curves::bls12_377::{Bls12_377, Fq, Fr};
+    use snarkvm_utilities::{
+        ToBytes,
+        rand::{TestRng, Uniform},
+    };
+
     use crate::{
         snark::varuna::{
             AHPForR1CS,
@@ -26,14 +34,6 @@ mod varuna {
             test_circuit::TestCircuit,
         },
         traits::{AlgebraicSponge, SNARK},
-    };
-
-    use std::collections::BTreeMap;
-
-    use snarkvm_curves::bls12_377::{Bls12_377, Fq, Fr};
-    use snarkvm_utilities::{
-        ToBytes,
-        rand::{TestRng, Uniform},
     };
 
     type FS = crate::crypto_hash::PoseidonSponge<Fq, 2, 1>;
@@ -302,6 +302,15 @@ mod varuna {
 
 #[cfg(any(test, feature = "test"))]
 mod varuna_hiding {
+    use std::str::FromStr;
+
+    use snarkvm_curves::bls12_377::{Bls12_377, Fq, Fr};
+    use snarkvm_utilities::{
+        FromBytes,
+        ToBytes,
+        rand::{TestRng, Uniform},
+    };
+
     use crate::{
         crypto_hash::PoseidonSponge,
         snark::varuna::{
@@ -313,14 +322,6 @@ mod varuna_hiding {
         },
         traits::{AlgebraicSponge, SNARK},
     };
-    use snarkvm_curves::bls12_377::{Bls12_377, Fq, Fr};
-    use snarkvm_utilities::{
-        FromBytes,
-        ToBytes,
-        rand::{TestRng, Uniform},
-    };
-
-    use std::str::FromStr;
 
     type VarunaInst = VarunaSNARK<Bls12_377, FS, VarunaHidingMode>;
     type FS = PoseidonSponge<Fq, 2, 1>;
@@ -531,14 +532,16 @@ mod varuna_hiding {
 }
 
 mod varuna_test_vectors {
+    use std::{collections::BTreeMap, fs, ops::Deref, path::PathBuf, str::FromStr, sync::Arc};
+
+    use snarkvm_curves::bls12_377::{Bls12_377, Fq, Fr};
+    use snarkvm_fields::One;
+
     use crate::{
         fft::EvaluationDomain,
         snark::varuna::{AHPForR1CS, TestCircuit, VarunaNonHidingMode, VarunaSNARK, ahp::verifier},
         traits::snark::SNARK,
     };
-    use snarkvm_curves::bls12_377::{Bls12_377, Fq, Fr};
-    use snarkvm_fields::One;
-    use std::{collections::BTreeMap, fs, ops::Deref, path::PathBuf, str::FromStr, sync::Arc};
 
     type FS = crate::crypto_hash::PoseidonSponge<Fq, 2, 1>;
     type MM = VarunaNonHidingMode;

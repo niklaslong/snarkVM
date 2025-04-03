@@ -13,6 +13,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use std::collections::BTreeMap;
+
+use anyhow::Result;
+use itertools::Itertools;
+use rand::Rng;
+use rand_core::CryptoRng;
+#[cfg(not(feature = "serial"))]
+use rayon::prelude::*;
+use snarkvm_fields::PrimeField;
+use snarkvm_utilities::{cfg_iter, println};
+
 use crate::{
     r1cs::ConstraintSynthesizer,
     snark::varuna::{
@@ -21,18 +32,6 @@ use crate::{
         prover,
     },
 };
-use snarkvm_fields::PrimeField;
-
-use anyhow::Result;
-use itertools::Itertools;
-use rand::Rng;
-use rand_core::CryptoRng;
-use std::collections::BTreeMap;
-
-use snarkvm_utilities::{cfg_iter, println};
-
-#[cfg(not(feature = "serial"))]
-use rayon::prelude::*;
 
 mod fifth;
 mod first;
@@ -189,9 +188,10 @@ fn inner_product<F: PrimeField>(
 
 #[test]
 fn check_division_by_vanishing_poly_preserve_sparseness() {
-    use crate::fft::{EvaluationDomain, Evaluations as EvaluationsOnDomain};
     use snarkvm_curves::bls12_377::Fr;
     use snarkvm_fields::{Field, One, Zero};
+
+    use crate::fft::{EvaluationDomain, Evaluations as EvaluationsOnDomain};
 
     let domain = EvaluationDomain::new(16).unwrap();
     let small_domain = EvaluationDomain::new(4).unwrap();

@@ -13,12 +13,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#[cfg(not(feature = "serial"))]
+use rayon::prelude::*;
 use snarkvm_curves::{AffineCurve, ProjectiveCurve};
 use snarkvm_fields::{One, PrimeField, Zero};
 use snarkvm_utilities::{BigInteger, cfg_into_iter};
-
-#[cfg(not(feature = "serial"))]
-use rayon::prelude::*;
 
 fn update_buckets<G: AffineCurve>(
     base: &G,

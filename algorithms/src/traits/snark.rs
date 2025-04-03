@@ -13,13 +13,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use crate::{AlgebraicSponge, r1cs::ConstraintSynthesizer};
-use snarkvm_fields::PrimeField;
-use snarkvm_utilities::{CanonicalDeserialize, CanonicalSerialize, FromBytes, ToBytes};
+use std::{borrow::Borrow, collections::BTreeMap, fmt::Debug};
 
 use anyhow::Result;
 use rand::{CryptoRng, Rng};
-use std::{borrow::Borrow, collections::BTreeMap, fmt::Debug};
+use snarkvm_fields::PrimeField;
+use snarkvm_utilities::{CanonicalDeserialize, CanonicalSerialize, FromBytes, ToBytes};
+
+use crate::{AlgebraicSponge, r1cs::ConstraintSynthesizer};
 
 /// Defines trait that describes preparing from an unprepared version to a prepare version.
 pub trait Prepare {

@@ -13,7 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use crate::polycommit::sonic_pc;
 use snarkvm_curves::PairingEngine;
 use snarkvm_utilities::{
     FromBytes,
@@ -22,6 +21,8 @@ use snarkvm_utilities::{
     io::{self, Read, Write},
     serialize::*,
 };
+
+use crate::polycommit::sonic_pc;
 
 /// A certificate for the verifying key.
 #[derive(Clone, Debug, PartialEq, Eq, CanonicalSerialize, CanonicalDeserialize)]

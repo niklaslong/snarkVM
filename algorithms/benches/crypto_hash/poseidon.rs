@@ -16,13 +16,13 @@
 #[macro_use]
 extern crate criterion;
 
+use std::time::Duration;
+
+use criterion::Criterion;
 use snarkvm_algorithms::{AlgebraicSponge, crypto_hash::PoseidonSponge};
 use snarkvm_curves::bls12_377::{Fq, FqParameters};
 use snarkvm_fields::Fp384;
 use snarkvm_utilities::{TestRng, Uniform};
-
-use criterion::Criterion;
-use std::time::Duration;
 
 fn sponge_2_1_absorb_100_native(c: &mut Criterion) {
     let rng = &mut TestRng::default();

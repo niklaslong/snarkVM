@@ -13,6 +13,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use core::{borrow::Borrow, marker::PhantomData};
+use std::{collections::BTreeMap, fmt::Write};
+
+use anyhow::{Result, anyhow, ensure};
+use itertools::Itertools;
+use snarkvm_fields::{Field, PrimeField};
+
 use crate::{
     fft::{
         EvaluationDomain,
@@ -28,12 +35,6 @@ use crate::{
         verifier::QueryPoints,
     },
 };
-use anyhow::{Result, anyhow, ensure};
-use snarkvm_fields::{Field, PrimeField};
-
-use core::{borrow::Borrow, marker::PhantomData};
-use itertools::Itertools;
-use std::{collections::BTreeMap, fmt::Write};
 
 /// The algebraic holographic proof defined in [CHMMVW19](https://eprint.iacr.org/2019/1047).
 /// Currently, this AHP only supports inputs of size one
@@ -489,11 +490,12 @@ where
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-    use crate::fft::DensePolynomial;
     use snarkvm_curves::bls12_377::fr::Fr;
     use snarkvm_fields::Zero;
     use snarkvm_utilities::rand::TestRng;
+
+    use super::*;
+    use crate::fft::DensePolynomial;
 
     #[test]
     fn test_summation() {

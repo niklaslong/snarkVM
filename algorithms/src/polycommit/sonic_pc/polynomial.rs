@@ -13,18 +13,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use super::PolynomialLabel;
-use crate::fft::{DensePolynomial, EvaluationDomain, Evaluations as EvaluationsOnDomain, Polynomial, SparsePolynomial};
-use snarkvm_fields::{Field, PrimeField};
-use snarkvm_utilities::{CanonicalDeserialize, CanonicalSerialize, cfg_iter, cfg_iter_mut};
-
-use anyhow::Result;
 use std::borrow::Cow;
 
+use anyhow::Result;
 #[cfg(feature = "serial")]
 use itertools::Itertools;
 #[cfg(not(feature = "serial"))]
 use rayon::prelude::*;
+use snarkvm_fields::{Field, PrimeField};
+use snarkvm_utilities::{CanonicalDeserialize, CanonicalSerialize, cfg_iter, cfg_iter_mut};
+
+use super::PolynomialLabel;
+use crate::fft::{DensePolynomial, EvaluationDomain, Evaluations as EvaluationsOnDomain, Polynomial, SparsePolynomial};
 
 #[derive(Clone, Debug, CanonicalSerialize, CanonicalDeserialize, Eq, PartialEq)]
 pub struct PolynomialInfo {

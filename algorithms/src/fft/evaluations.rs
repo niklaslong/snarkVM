@@ -15,18 +15,17 @@
 
 //! A polynomial represented in evaluations form.
 
-use crate::fft::{DensePolynomial, EvaluationDomain};
+use std::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Sub, SubAssign};
+
 #[cfg(feature = "serial")]
 use itertools::Itertools;
 #[cfg(not(feature = "serial"))]
 use rayon::prelude::*;
-
 use snarkvm_fields::PrimeField;
 use snarkvm_utilities::{cfg_iter, cfg_iter_mut, serialize::*};
 
-use std::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Sub, SubAssign};
-
 use super::domain::IFFTPrecomputation;
+use crate::fft::{DensePolynomial, EvaluationDomain};
 
 /// Stores a polynomial in evaluation form.
 #[derive(Clone, PartialEq, Eq, Hash, Debug, CanonicalSerialize, CanonicalDeserialize)]

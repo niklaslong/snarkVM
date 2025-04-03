@@ -43,12 +43,11 @@ pub use test_constraint_system::{Fr, TestConstraintSystem};
 
 #[cfg(feature = "test")]
 mod test_constraint_checker;
-#[cfg(feature = "test")]
-pub use test_constraint_checker::TestConstraintChecker;
+use core::cmp::Ordering;
 
 use snarkvm_utilities::serialize::*;
-
-use core::cmp::Ordering;
+#[cfg(feature = "test")]
+pub use test_constraint_checker::TestConstraintChecker;
 
 /// Represents a variable in a constraint system.
 #[derive(PartialOrd, Ord, PartialEq, Eq, Copy, Clone, Debug, Hash)]

@@ -13,6 +13,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use anyhow::Result;
+#[cfg(not(feature = "serial"))]
+use rayon::prelude::*;
 use snarkvm_algorithms::msm::*;
 use snarkvm_curves::{
     bls12_377::{Fr, G1Projective},
@@ -23,10 +26,6 @@ use snarkvm_utilities::{
     cfg_into_iter,
     rand::{TestRng, Uniform},
 };
-
-use anyhow::Result;
-#[cfg(not(feature = "serial"))]
-use rayon::prelude::*;
 
 const DEFAULT_POWER_OF_TWO: usize = 20;
 

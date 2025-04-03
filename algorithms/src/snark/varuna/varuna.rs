@@ -13,6 +13,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use core::marker::PhantomData;
+use std::{borrow::Borrow, collections::BTreeMap, ops::Deref, sync::Arc};
+
+use anyhow::{Result, anyhow, bail, ensure};
+use itertools::Itertools;
+use rand::{CryptoRng, Rng, RngCore};
+use snarkvm_curves::PairingEngine;
+use snarkvm_fields::{One, PrimeField, ToConstraintField, Zero};
+use snarkvm_utilities::{ToBytes, println, to_bytes_le};
+
 use super::Certificate;
 use crate::{
     AlgebraicSponge,
@@ -40,21 +50,8 @@ use crate::{
         prover,
         witness_label,
     },
-    srs::UniversalVerifier,
+    srs::{UniversalProver, UniversalVerifier},
 };
-use rand::RngCore;
-use snarkvm_curves::PairingEngine;
-use snarkvm_fields::{One, PrimeField, ToConstraintField, Zero};
-use snarkvm_utilities::{ToBytes, to_bytes_le};
-
-use anyhow::{Result, anyhow, bail, ensure};
-use core::marker::PhantomData;
-use itertools::Itertools;
-use rand::{CryptoRng, Rng};
-use std::{borrow::Borrow, collections::BTreeMap, ops::Deref, sync::Arc};
-
-use crate::srs::UniversalProver;
-use snarkvm_utilities::println;
 
 /// The Varuna proof system.
 #[derive(Clone, Debug)]

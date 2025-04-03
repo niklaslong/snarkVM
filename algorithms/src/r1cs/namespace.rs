@@ -13,10 +13,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use crate::r1cs::{ConstraintSystem, LinearCombination, Variable, errors::SynthesisError};
+use std::marker::PhantomData;
+
 use snarkvm_fields::Field;
 
-use std::marker::PhantomData;
+use crate::r1cs::{ConstraintSystem, LinearCombination, Variable, errors::SynthesisError};
 
 /// This is a "namespaced" constraint system which borrows a constraint system
 /// (pushing a namespace context) and, when dropped, pops out of the namespace context.

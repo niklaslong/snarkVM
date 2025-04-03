@@ -13,6 +13,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use core::marker::PhantomData;
+use std::collections::BTreeMap;
+
+use anyhow::{Result, anyhow, ensure};
+use itertools::Itertools;
+#[cfg(not(feature = "serial"))]
+use rayon::prelude::*;
+use snarkvm_fields::PrimeField;
+use snarkvm_utilities::{cfg_into_iter, println};
+
+use super::Matrix;
 use crate::{
     fft::EvaluationDomain,
     polycommit::sonic_pc::{LinearCombination, PolynomialInfo, PolynomialLabel},
@@ -27,19 +38,6 @@ use crate::{
         num_non_zero,
     },
 };
-use snarkvm_fields::PrimeField;
-use snarkvm_utilities::cfg_into_iter;
-
-use anyhow::{Result, anyhow, ensure};
-use core::marker::PhantomData;
-use itertools::Itertools;
-use std::collections::BTreeMap;
-
-#[cfg(not(feature = "serial"))]
-use rayon::prelude::*;
-use snarkvm_utilities::println;
-
-use super::Matrix;
 
 impl<F: PrimeField, SM: SNARKMode> AHPForR1CS<F, SM> {
     /// Generate the index polynomials for this constraint system.

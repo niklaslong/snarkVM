@@ -13,16 +13,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use crate::{AlgebraicSponge, DuplexSpongeMode, nonnative_params::*};
-use snarkvm_fields::{FieldParameters, PoseidonParameters, PrimeField, ToConstraintField};
-use snarkvm_utilities::{BigInteger, FromBits, ToBits};
-
-use smallvec::SmallVec;
 use std::{
     iter::Peekable,
     ops::{Index, IndexMut},
     sync::Arc,
 };
+
+use smallvec::SmallVec;
+use snarkvm_fields::{FieldParameters, PoseidonParameters, PrimeField, ToConstraintField};
+use snarkvm_utilities::{BigInteger, FromBits, ToBits};
+
+use crate::{AlgebraicSponge, DuplexSpongeMode, nonnative_params::*};
 
 #[derive(Copy, Clone, Debug)]
 pub struct State<F: PrimeField, const RATE: usize, const CAPACITY: usize> {

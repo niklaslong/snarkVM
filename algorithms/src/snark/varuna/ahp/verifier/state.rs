@@ -14,6 +14,9 @@
 // limitations under the License.
 
 use core::marker::PhantomData;
+use std::collections::{BTreeMap, HashSet};
+
+use snarkvm_fields::PrimeField;
 
 use crate::{
     fft::EvaluationDomain,
@@ -23,8 +26,6 @@ use crate::{
         ahp::verifier::{FirstMessage, FourthMessage, SecondMessage, ThirdMessage},
     },
 };
-use snarkvm_fields::PrimeField;
-use std::collections::{BTreeMap, HashSet};
 
 #[derive(Debug)]
 /// Circuit Specific State of the Verifier

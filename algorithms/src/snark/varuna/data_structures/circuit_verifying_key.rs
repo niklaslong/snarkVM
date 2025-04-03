@@ -13,7 +13,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use crate::{polycommit::sonic_pc, snark::varuna::ahp::indexer::*};
+use core::{fmt, str::FromStr};
+use std::cmp::Ordering;
+
+use anyhow::Result;
+use serde::{Deserialize, Deserializer, Serialize, Serializer, de};
 use snarkvm_curves::PairingEngine;
 use snarkvm_utilities::{
     FromBytes,
@@ -26,10 +30,7 @@ use snarkvm_utilities::{
     string::String,
 };
 
-use anyhow::Result;
-use core::{fmt, str::FromStr};
-use serde::{Deserialize, Deserializer, Serialize, Serializer, de};
-use std::cmp::Ordering;
+use crate::{polycommit::sonic_pc, snark::varuna::ahp::indexer::*};
 
 /// Verification key for a specific index (i.e., R1CS matrices).
 #[derive(Debug, Clone, PartialEq, Eq, CanonicalSerialize, CanonicalDeserialize)]

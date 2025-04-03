@@ -13,10 +13,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use crate::{
-    AlgebraicSponge,
-    fft::{DensePolynomial, EvaluationDomain},
-};
+use core::ops::{Add, AddAssign};
+use std::{collections::BTreeMap, io, ops::Range, sync::Arc};
+
+use anyhow::Result;
+use rand_core::RngCore;
 use snarkvm_curves::{AffineCurve, PairingCurve, PairingEngine, ProjectiveCurve};
 use snarkvm_fields::{ConstraintFieldError, ToConstraintField, Zero};
 use snarkvm_parameters::mainnet::PowersOfG;
@@ -29,11 +30,11 @@ use snarkvm_utilities::{
     serialize::{CanonicalDeserialize, CanonicalSerialize, Compress, SerializationError, Valid, Validate},
 };
 
-use crate::srs::{UniversalProver, UniversalVerifier};
-use anyhow::Result;
-use core::ops::{Add, AddAssign};
-use rand_core::RngCore;
-use std::{collections::BTreeMap, io, ops::Range, sync::Arc};
+use crate::{
+    AlgebraicSponge,
+    fft::{DensePolynomial, EvaluationDomain},
+    srs::{UniversalProver, UniversalVerifier},
+};
 
 /// `UniversalParams` are the universal parameters for the KZG10 scheme.
 #[derive(Clone, Debug)]

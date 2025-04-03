@@ -13,6 +13,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use core::convert::TryInto;
+use std::collections::BTreeMap;
+
+use anyhow::Result;
+use itertools::Itertools;
+use rand_core::RngCore;
+#[cfg(not(feature = "serial"))]
+use rayon::prelude::*;
+use snarkvm_fields::{PrimeField, batch_inversion_and_mul};
+use snarkvm_utilities::{ExecutionPool, cfg_iter, cfg_iter_mut};
+
 use crate::{
     fft::{
         DensePolynomial,
@@ -31,17 +42,6 @@ use crate::{
         witness_label,
     },
 };
-use snarkvm_fields::{PrimeField, batch_inversion_and_mul};
-use snarkvm_utilities::{ExecutionPool, cfg_iter, cfg_iter_mut};
-
-use anyhow::Result;
-use core::convert::TryInto;
-use itertools::Itertools;
-use rand_core::RngCore;
-use std::collections::BTreeMap;
-
-#[cfg(not(feature = "serial"))]
-use rayon::prelude::*;
 
 type Sum<F> = F;
 type Lhs<F> = DensePolynomial<F>;

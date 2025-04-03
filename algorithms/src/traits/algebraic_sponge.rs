@@ -13,11 +13,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use core::fmt::Debug;
+
 use smallvec::SmallVec;
 use snarkvm_fields::{PrimeField, ToConstraintField};
 use snarkvm_utilities::FromBits;
-
-use core::fmt::Debug;
 
 /// The interface for a cryptographic sponge.
 /// A sponge can `absorb` or take in inputs and later `squeeze` or output bytes or field elements.

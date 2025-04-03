@@ -52,10 +52,9 @@ pub mod traits;
 pub use traits::*;
 
 pub mod prelude {
-    pub use crate::{errors::*, traits::*};
-
     #[cfg(feature = "polycommit")]
     pub use crate::polycommit::error::*;
     #[cfg(feature = "r1cs")]
     pub use crate::r1cs::errors::*;
+    pub use crate::{errors::*, traits::*};
 }

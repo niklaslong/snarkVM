@@ -13,6 +13,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use std::marker::PhantomData;
+
+use itertools::Itertools;
+use rand::{
+    Rng,
+    distributions::{self, Distribution},
+};
+use snarkvm_curves::PairingEngine;
+use snarkvm_fields::{One, Zero};
+use snarkvm_utilities::rand::{TestRng, Uniform};
+
 use super::sonic_pc::{
     BatchLCProof,
     BatchProof,
@@ -33,16 +44,6 @@ use crate::{
     },
     srs::UniversalVerifier,
 };
-use snarkvm_curves::PairingEngine;
-use snarkvm_fields::{One, Zero};
-use snarkvm_utilities::rand::{TestRng, Uniform};
-
-use itertools::Itertools;
-use rand::{
-    Rng,
-    distributions::{self, Distribution},
-};
-use std::marker::PhantomData;
 
 #[derive(Default)]
 struct TestInfo {

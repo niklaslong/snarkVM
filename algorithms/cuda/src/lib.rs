@@ -13,10 +13,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use core::ffi::c_void;
+
 #[allow(unused_imports)]
 use blst::*;
-
-use core::ffi::c_void;
 sppark::cuda_error!();
 
 #[repr(C)]

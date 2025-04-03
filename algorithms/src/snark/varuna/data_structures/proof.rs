@@ -13,11 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use crate::{
-    SNARKError,
-    polycommit::sonic_pc,
-    snark::varuna::{CircuitId, ahp},
-};
+use std::collections::BTreeMap;
 
 use ahp::prover::{FourthMessage, ThirdMessage};
 use snarkvm_curves::PairingEngine;
@@ -30,7 +26,11 @@ use snarkvm_utilities::{
     serialize::*,
 };
 
-use std::collections::BTreeMap;
+use crate::{
+    SNARKError,
+    polycommit::sonic_pc,
+    snark::varuna::{CircuitId, ahp},
+};
 
 #[derive(Clone, Debug, PartialEq, Eq, CanonicalSerialize, CanonicalDeserialize)]
 pub struct Commitments<E: PairingEngine> {
@@ -383,8 +383,13 @@ impl<E: PairingEngine> FromBytes for Proof<E> {
 mod test {
     #![allow(non_camel_case_types)]
 
-    use super::*;
+    use snarkvm_curves::{
+        AffineCurve,
+        bls12_377::{Bls12_377, Fr, G1Affine},
+    };
+    use snarkvm_utilities::{TestRng, Uniform};
 
+    use super::*;
     use crate::{
         polycommit::{
             kzg10::{KZGCommitment, KZGProof},
@@ -392,11 +397,6 @@ mod test {
         },
         snark::varuna::prover::MatrixSums,
     };
-    use snarkvm_curves::{
-        AffineCurve,
-        bls12_377::{Bls12_377, Fr, G1Affine},
-    };
-    use snarkvm_utilities::{TestRng, Uniform};
 
     const fn modes() -> [(Compress, Validate); 4] {
         [

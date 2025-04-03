@@ -13,13 +13,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use crate::r1cs::{ConstraintSystem, Index, LinearCombination, OptionalVec, Variable, errors::SynthesisError};
-use snarkvm_fields::Field;
-
 use cfg_if::cfg_if;
 use fxhash::{FxBuildHasher, FxHashMap};
 use indexmap::{IndexMap, IndexSet, map::Entry};
 use itertools::Itertools;
+use snarkvm_fields::Field;
+
+use crate::r1cs::{ConstraintSystem, Index, LinearCombination, OptionalVec, Variable, errors::SynthesisError};
 
 /// This field is the scalar field (Fr) of BLS12-377.
 pub type Fr = snarkvm_curves::bls12_377::Fr;

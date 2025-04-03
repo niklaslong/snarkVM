@@ -16,6 +16,9 @@
 #[macro_use]
 extern crate criterion;
 
+use std::{collections::BTreeMap, time::Duration};
+
+use criterion::Criterion;
 use snarkvm_algorithms::{
     AlgebraicSponge,
     SNARK,
@@ -24,9 +27,6 @@ use snarkvm_algorithms::{
 };
 use snarkvm_curves::bls12_377::{Bls12_377, Fq, Fr};
 use snarkvm_utilities::{CanonicalDeserialize, CanonicalSerialize, TestRng};
-
-use criterion::Criterion;
-use std::{collections::BTreeMap, time::Duration};
 
 type VarunaInst = VarunaSNARK<Bls12_377, FS, VarunaHidingMode>;
 type FS = PoseidonSponge<Fq, 2, 1>;

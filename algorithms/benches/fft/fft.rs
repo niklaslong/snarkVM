@@ -15,13 +15,13 @@
 
 extern crate criterion;
 
+use std::cmp::min;
+
+use criterion::{Bencher, BenchmarkId, Criterion, criterion_group, criterion_main};
 use snarkvm_algorithms::fft::{DensePolynomial, EvaluationDomain};
 use snarkvm_curves::bls12_377::Fr as Bls12_377_Fr;
 use snarkvm_fields::PrimeField;
 use snarkvm_utilities::TestRng;
-
-use criterion::{Bencher, BenchmarkId, Criterion, criterion_group, criterion_main};
-use std::cmp::min;
 
 /// Degree bounds to benchmark on
 /// e.g. degree bound of 2^{15}, means we do an FFT for a degree (2^{15} - 1) polynomial
