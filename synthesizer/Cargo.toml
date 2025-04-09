@@ -67,6 +67,7 @@ wasm = [
   "synthesizer-program/wasm",
   "synthesizer-snark/wasm"
 ]
+test-helpers = [ ]
 
 [[bench]]
 name = "kary_merkle_tree"
@@ -211,11 +212,11 @@ package = "snarkvm-ledger-narwhal-batch-header"
 path = "../ledger/narwhal/batch-header"
 features = [ "test-helpers" ]
 
-[dev-dependencies.ledger-test-helpers]
+[dependencies.ledger-test-helpers]
 package = "snarkvm-ledger-test-helpers"
 path = "../ledger/test-helpers"
 
-[dev-dependencies.once_cell]
+[dependencies.once_cell]
 version = "1.18"
 
 [dev-dependencies.rayon]

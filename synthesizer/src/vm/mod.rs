@@ -439,8 +439,8 @@ impl<N: Network, C: ConsensusStorage<N>> VM<N, C> {
     }
 }
 
-#[cfg(test)]
-pub(crate) mod test_helpers {
+#[cfg(any(test, feature = "test-helpers"))]
+pub mod test_helpers {
     use super::*;
     use console::{
         account::{Address, ViewKey},
@@ -474,7 +474,7 @@ pub(crate) mod test_helpers {
         VM::from(ConsensusStore::open(StorageMode::new_test(None)).unwrap()).unwrap()
     }
 
-    pub(crate) fn sample_genesis_private_key(rng: &mut TestRng) -> PrivateKey<CurrentNetwork> {
+    pub fn sample_genesis_private_key(rng: &mut TestRng) -> PrivateKey<CurrentNetwork> {
         static INSTANCE: OnceCell<PrivateKey<CurrentNetwork>> = OnceCell::new();
         *INSTANCE.get_or_init(|| {
             // Initialize a new caller.
@@ -482,7 +482,7 @@ pub(crate) mod test_helpers {
         })
     }
 
-    pub(crate) fn sample_genesis_block(rng: &mut TestRng) -> Block<CurrentNetwork> {
+    pub fn sample_genesis_block(rng: &mut TestRng) -> Block<CurrentNetwork> {
         static INSTANCE: OnceCell<Block<CurrentNetwork>> = OnceCell::new();
         INSTANCE
             .get_or_init(|| {
@@ -496,7 +496,7 @@ pub(crate) mod test_helpers {
             .clone()
     }
 
-    pub(crate) fn sample_vm_with_genesis_block(rng: &mut TestRng) -> VM<CurrentNetwork, LedgerType> {
+    pub fn sample_vm_with_genesis_block(rng: &mut TestRng) -> VM<CurrentNetwork, LedgerType> {
         // Initialize the VM.
         let vm = crate::vm::test_helpers::sample_vm();
         // Initialize the genesis block.
