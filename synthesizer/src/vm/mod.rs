@@ -441,28 +441,23 @@ impl<N: Network, C: ConsensusStorage<N>> VM<N, C> {
     }
 }
 
-#[cfg(test)]
-pub(crate) mod test_helpers {
+#[cfg(any(test, feature = "test-helpers"))]
+pub mod test_helpers {
     use super::*;
-    use circuit::AleoV0;
     use console::{
         account::{Address, ViewKey},
         network::MainnetV0,
-        program::{Entry, Value},
+        program::Value,
         types::Field,
     };
-    use ledger_block::{Block, Header, Input, Metadata, Transition};
-    use ledger_test_helpers::{large_transaction_program, small_transaction_program};
+    use ledger_block::{Block, Header, Metadata, Transition};
     use synthesizer_program::Program;
 
     use aleo_std::StorageMode;
     use indexmap::IndexMap;
     use once_cell::sync::OnceCell;
-    use serde_json::json;
-    use synthesizer_snark::{Proof, VerifyingKey};
 
     pub(crate) type CurrentNetwork = MainnetV0;
-    type CurrentAleo = AleoV0;
 
     #[cfg(not(feature = "rocks"))]
     type LedgerType = ledger_store::helpers::memory::ConsensusMemory<CurrentNetwork>;
@@ -472,17 +467,16 @@ pub(crate) mod test_helpers {
     type NoQuery = Query<CurrentNetwork, <LedgerType as ConsensusStorage<CurrentNetwork>>::BlockStorage>;
 
     /// Samples a new finalize state.
-    pub(crate) fn sample_finalize_state(block_height: u32) -> FinalizeGlobalState {
+    pub fn sample_finalize_state(block_height: u32) -> FinalizeGlobalState {
         FinalizeGlobalState::from(block_height as u64, block_height, [0u8; 32])
     }
 
-    pub(crate) fn sample_vm() -> VM<CurrentNetwork, LedgerType> {
+    pub fn sample_vm() -> VM<CurrentNetwork, LedgerType> {
         // Initialize a new VM.
         VM::from(ConsensusStore::open(StorageMode::new_test(None)).unwrap()).unwrap()
     }
 
-    #[cfg(feature = "test")]
-    pub(crate) fn sample_vm_at_height(height: u32, rng: &mut TestRng) -> VM<CurrentNetwork, LedgerType> {
+    pub fn sample_vm_at_height(height: u32, rng: &mut TestRng) -> VM<CurrentNetwork, LedgerType> {
         // Initialize the VM with a genesis block.
         let vm = sample_vm_with_genesis_block(rng);
         // Get the genesis private key.
@@ -496,7 +490,7 @@ pub(crate) mod test_helpers {
         vm
     }
 
-    pub(crate) fn sample_genesis_private_key(rng: &mut TestRng) -> PrivateKey<CurrentNetwork> {
+    pub fn sample_genesis_private_key(rng: &mut TestRng) -> PrivateKey<CurrentNetwork> {
         static INSTANCE: OnceCell<PrivateKey<CurrentNetwork>> = OnceCell::new();
         *INSTANCE.get_or_init(|| {
             // Initialize a new caller.
@@ -504,7 +498,7 @@ pub(crate) mod test_helpers {
         })
     }
 
-    pub(crate) fn sample_genesis_block(rng: &mut TestRng) -> Block<CurrentNetwork> {
+    pub fn sample_genesis_block(rng: &mut TestRng) -> Block<CurrentNetwork> {
         static INSTANCE: OnceCell<Block<CurrentNetwork>> = OnceCell::new();
         INSTANCE
             .get_or_init(|| {
@@ -518,7 +512,7 @@ pub(crate) mod test_helpers {
             .clone()
     }
 
-    pub(crate) fn sample_vm_with_genesis_block(rng: &mut TestRng) -> VM<CurrentNetwork, LedgerType> {
+    pub fn sample_vm_with_genesis_block(rng: &mut TestRng) -> VM<CurrentNetwork, LedgerType> {
         // Initialize the VM.
         let vm = crate::vm::test_helpers::sample_vm();
         // Initialize the genesis block.
@@ -529,7 +523,7 @@ pub(crate) mod test_helpers {
         vm
     }
 
-    pub(crate) fn sample_program() -> Program<CurrentNetwork> {
+    pub fn sample_program() -> Program<CurrentNetwork> {
         static INSTANCE: OnceCell<Program<CurrentNetwork>> = OnceCell::new();
         INSTANCE
             .get_or_init(|| {
@@ -570,7 +564,7 @@ function compute:
             .clone()
     }
 
-    pub(crate) fn sample_deployment_transaction(rng: &mut TestRng) -> Transaction<CurrentNetwork> {
+    pub fn sample_deployment_transaction(rng: &mut TestRng) -> Transaction<CurrentNetwork> {
         static INSTANCE: OnceCell<Transaction<CurrentNetwork>> = OnceCell::new();
         INSTANCE
             .get_or_init(|| {
@@ -607,7 +601,7 @@ function compute:
             .clone()
     }
 
-    pub(crate) fn sample_execution_transaction_without_fee(rng: &mut TestRng) -> Transaction<CurrentNetwork> {
+    pub fn sample_execution_transaction_without_fee(rng: &mut TestRng) -> Transaction<CurrentNetwork> {
         static INSTANCE: OnceCell<Transaction<CurrentNetwork>> = OnceCell::new();
         INSTANCE
             .get_or_init(|| {
@@ -650,7 +644,7 @@ function compute:
             .clone()
     }
 
-    pub(crate) fn sample_execution_transaction_with_private_fee(rng: &mut TestRng) -> Transaction<CurrentNetwork> {
+    pub fn sample_execution_transaction_with_private_fee(rng: &mut TestRng) -> Transaction<CurrentNetwork> {
         static INSTANCE: OnceCell<Transaction<CurrentNetwork>> = OnceCell::new();
         INSTANCE
             .get_or_init(|| {
@@ -702,7 +696,7 @@ function compute:
             .clone()
     }
 
-    pub(crate) fn sample_execution_transaction_with_public_fee(rng: &mut TestRng) -> Transaction<CurrentNetwork> {
+    pub fn sample_execution_transaction_with_public_fee(rng: &mut TestRng) -> Transaction<CurrentNetwork> {
         static INSTANCE: OnceCell<Transaction<CurrentNetwork>> = OnceCell::new();
         INSTANCE
             .get_or_init(|| {
@@ -762,8 +756,7 @@ function compute:
             .clone()
     }
 
-    #[cfg(feature = "test")]
-    pub(crate) fn create_new_transaction_with_different_fee(
+    pub fn create_new_transaction_with_different_fee(
         rng: &mut TestRng,
         transaction: Transaction<CurrentNetwork>,
         fee: u64,
@@ -851,6 +844,19 @@ function compute:
             rng,
         )
     }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{test_helpers::*, *};
+
+    use console::{account::ViewKey, network::MainnetV0, program::Entry};
+    use ledger_block::{Input, Transition};
+    use ledger_test_helpers::{large_transaction_program, small_transaction_program};
+    use serde_json::json;
+    use synthesizer_snark::{Proof, VerifyingKey};
+
+    type CurrentAleo = circuit::AleoV0;
 
     #[test]
     fn test_multiple_deployments_and_multiple_executions() {
@@ -3271,7 +3277,6 @@ function adder:
         assert!(vm.process().read().contains_program(&ProgramID::from_str("child_program.aleo").unwrap()));
     }
 
-    #[cfg(feature = "test")]
     #[test]
     fn test_versioned_keyword_restrictions() {
         let rng = &mut TestRng::default();
