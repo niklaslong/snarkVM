@@ -51,5 +51,5 @@ pub mod prelude {
     #[cfg(feature = "snark")]
     pub use crate::snark::{Certificate, Proof, ProvingKey, UniversalSRS, VerifyingKey};
     #[cfg(all(feature = "process", feature = "program", feature = "snark"))]
-    pub use crate::vm::*;
+    pub use crate::vm::VM;
 }
