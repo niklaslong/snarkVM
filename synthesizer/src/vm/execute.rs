@@ -323,8 +323,17 @@ mod tests {
         .into_iter();
 
         // Execute.
-        let transaction =
-            vm.execute(&validator_private_key, ("credits.aleo", "bond_validator"), inputs, None, 0, None, rng).unwrap();
+        let transaction = vm
+            .execute(
+                &validator_private_key,
+                ("credits.aleo", "bond_validator"),
+                inputs,
+                None,
+                0,
+                None::<Query<CurrentNetwork, <LedgerType as ConsensusStorage<_>>::BlockStorage>>,
+                rng,
+            )
+            .unwrap();
 
         // Ensure the transaction is a bond public transition.
         assert_eq!(transaction.transitions().count(), 2);
@@ -364,8 +373,17 @@ mod tests {
         .into_iter();
 
         // Execute.
-        let transaction =
-            vm.execute(&delegator_private_key, ("credits.aleo", "bond_public"), inputs, None, 0, None, rng).unwrap();
+        let transaction = vm
+            .execute(
+                &delegator_private_key,
+                ("credits.aleo", "bond_public"),
+                inputs,
+                None,
+                0,
+                None::<Query<CurrentNetwork, <LedgerType as ConsensusStorage<_>>::BlockStorage>>,
+                rng,
+            )
+            .unwrap();
 
         // Ensure the transaction is a bond public transition.
         assert_eq!(transaction.transitions().count(), 2);
@@ -404,7 +422,13 @@ mod tests {
 
         let authorization = vm.authorize(&caller_private_key, credits_program, function_name, inputs, rng).unwrap();
 
-        let (execution, _) = vm.execute_authorization_raw(authorization, None, rng).unwrap();
+        let (execution, _) = vm
+            .execute_authorization_raw(
+                authorization,
+                None::<Query<CurrentNetwork, <LedgerType as ConsensusStorage<_>>::BlockStorage>>,
+                rng,
+            )
+            .unwrap();
         let (cost, _) = execution_cost_v2(&vm.process().read(), &execution).unwrap();
         let (old_cost, _) = execution_cost_v1(&vm.process().read(), &execution).unwrap();
 
@@ -435,8 +459,17 @@ mod tests {
         .into_iter();
 
         // Execute.
-        let transaction =
-            vm.execute(&private_key, ("credits.aleo", "transfer_public"), inputs.clone(), None, 0, None, rng).unwrap();
+        let transaction = vm
+            .execute(
+                &private_key,
+                ("credits.aleo", "transfer_public"),
+                inputs.clone(),
+                None,
+                0,
+                None::<Query<CurrentNetwork, <LedgerType as ConsensusStorage<_>>::BlockStorage>>,
+                rng,
+            )
+            .unwrap();
 
         assert_eq!(51_060, *transaction.base_fee_amount().unwrap());
 
@@ -447,8 +480,17 @@ mod tests {
             vm.add_next_block(&next_block).unwrap();
         }
 
-        let transaction =
-            vm.execute(&private_key, ("credits.aleo", "transfer_public"), inputs.clone(), None, 0, None, rng).unwrap();
+        let transaction = vm
+            .execute(
+                &private_key,
+                ("credits.aleo", "transfer_public"),
+                inputs.clone(),
+                None,
+                0,
+                None::<Query<CurrentNetwork, <LedgerType as ConsensusStorage<_>>::BlockStorage>>,
+                rng,
+            )
+            .unwrap();
 
         assert_eq!(34_060, *transaction.base_fee_amount().unwrap());
     }
@@ -485,7 +527,16 @@ finalize test:
         .unwrap();
 
         // Deploy the program.
-        let transaction = vm.deploy(&private_key, &program, None, 0, None, rng).unwrap();
+        let transaction = vm
+            .deploy(
+                &private_key,
+                &program,
+                None,
+                0,
+                None::<Query<CurrentNetwork, <LedgerType as ConsensusStorage<_>>::BlockStorage>>,
+                rng,
+            )
+            .unwrap();
 
         // Construct the next block.
         let next_block = crate::test_helpers::sample_next_block(&vm, &private_key, &[transaction], rng).unwrap();
@@ -497,8 +548,17 @@ finalize test:
         let inputs = [Value::<CurrentNetwork>::from_str("1_000_000u64").unwrap()].into_iter();
 
         // Execute.
-        let transaction =
-            vm.execute(&private_key, ("nested_call.aleo", "test"), inputs.clone(), None, 0, None, rng).unwrap();
+        let transaction = vm
+            .execute(
+                &private_key,
+                ("nested_call.aleo", "test"),
+                inputs.clone(),
+                None,
+                0,
+                None::<Query<CurrentNetwork, <LedgerType as ConsensusStorage<_>>::BlockStorage>>,
+                rng,
+            )
+            .unwrap();
 
         // This fee should be at least the old credits.aleo/transfer_public fee, 51_060
         assert_eq!(62_776, *transaction.base_fee_amount().unwrap());
@@ -510,8 +570,17 @@ finalize test:
             vm.add_next_block(&next_block).unwrap();
         }
 
-        let transaction =
-            vm.execute(&private_key, ("nested_call.aleo", "test"), inputs.clone(), None, 0, None, rng).unwrap();
+        let transaction = vm
+            .execute(
+                &private_key,
+                ("nested_call.aleo", "test"),
+                inputs.clone(),
+                None,
+                0,
+                None::<Query<CurrentNetwork, <LedgerType as ConsensusStorage<_>>::BlockStorage>>,
+                rng,
+            )
+            .unwrap();
 
         // The difference in old vs new fees is 8_500 * 3 = 25_500 for the three get/get.or_use's
         // There are two get.or_use's in transfer_public and an additional one in the nested_call.aleo/test
@@ -540,7 +609,13 @@ finalize test:
 
         let authorization = vm.authorize(&caller_private_key, credits_program, function_name, inputs, rng).unwrap();
 
-        let (execution, _) = vm.execute_authorization_raw(authorization, None, rng).unwrap();
+        let (execution, _) = vm
+            .execute_authorization_raw(
+                authorization,
+                None::<Query<CurrentNetwork, <LedgerType as ConsensusStorage<_>>::BlockStorage>>,
+                rng,
+            )
+            .unwrap();
         let (cost, _) = execution_cost_v1(&vm.process().read(), &execution).unwrap();
         println!("Cost: {}", cost);
     }
@@ -564,8 +639,17 @@ finalize test:
         .into_iter();
 
         // Execute.
-        let transaction =
-            vm.execute(&caller_private_key, ("credits.aleo", "unbond_public"), inputs, None, 0, None, rng).unwrap();
+        let transaction = vm
+            .execute(
+                &caller_private_key,
+                ("credits.aleo", "unbond_public"),
+                inputs,
+                None,
+                0,
+                None::<Query<CurrentNetwork, <LedgerType as ConsensusStorage<_>>::BlockStorage>>,
+                rng,
+            )
+            .unwrap();
 
         // Ensure the transaction is an unbond public transition.
         assert_eq!(transaction.transitions().count(), 2);
@@ -607,8 +691,17 @@ finalize test:
         .into_iter();
 
         // Execute.
-        let transaction =
-            vm.execute(&caller_private_key, ("credits.aleo", "transfer_private"), inputs, None, 0, None, rng).unwrap();
+        let transaction = vm
+            .execute(
+                &caller_private_key,
+                ("credits.aleo", "transfer_private"),
+                inputs,
+                None,
+                0,
+                None::<Query<CurrentNetwork, <LedgerType as ConsensusStorage<_>>::BlockStorage>>,
+                rng,
+            )
+            .unwrap();
 
         // Assert the size of the transaction.
         let transaction_size_in_bytes = transaction.to_bytes_le().unwrap().len();
@@ -641,8 +734,17 @@ finalize test:
         .into_iter();
 
         // Execute.
-        let transaction =
-            vm.execute(&caller_private_key, ("credits.aleo", "transfer_public"), inputs, None, 0, None, rng).unwrap();
+        let transaction = vm
+            .execute(
+                &caller_private_key,
+                ("credits.aleo", "transfer_public"),
+                inputs,
+                None,
+                0,
+                None::<Query<CurrentNetwork, <LedgerType as ConsensusStorage<_>>::BlockStorage>>,
+                rng,
+            )
+            .unwrap();
 
         // Assert the size of the transaction.
         let transaction_size_in_bytes = transaction.to_bytes_le().unwrap().len();
@@ -675,8 +777,17 @@ finalize test:
         .into_iter();
 
         // Execute.
-        let transaction =
-            vm.execute(&signer, ("credits.aleo", "transfer_public_as_signer"), inputs, None, 0, None, rng).unwrap();
+        let transaction = vm
+            .execute(
+                &signer,
+                ("credits.aleo", "transfer_public_as_signer"),
+                inputs,
+                None,
+                0,
+                None::<Query<CurrentNetwork, <LedgerType as ConsensusStorage<_>>::BlockStorage>>,
+                rng,
+            )
+            .unwrap();
 
         // Assert the size of the transaction.
         let transaction_size_in_bytes = transaction.to_bytes_le().unwrap().len();
@@ -710,8 +821,17 @@ finalize test:
         let inputs = [Value::<CurrentNetwork>::Record(record_1), Value::<CurrentNetwork>::Record(record_2)].into_iter();
 
         // Execute.
-        let transaction =
-            vm.execute(&caller_private_key, ("credits.aleo", "join"), inputs, None, 0, None, rng).unwrap();
+        let transaction = vm
+            .execute(
+                &caller_private_key,
+                ("credits.aleo", "join"),
+                inputs,
+                None,
+                0,
+                None::<Query<CurrentNetwork, <LedgerType as ConsensusStorage<_>>::BlockStorage>>,
+                rng,
+            )
+            .unwrap();
 
         // Assert the size of the transaction.
         let transaction_size_in_bytes = transaction.to_bytes_le().unwrap().len();
@@ -744,8 +864,17 @@ finalize test:
             [Value::<CurrentNetwork>::Record(record), Value::<CurrentNetwork>::from_str("1u64").unwrap()].into_iter();
 
         // Execute.
-        let transaction =
-            vm.execute(&caller_private_key, ("credits.aleo", "split"), inputs, None, 0, None, rng).unwrap();
+        let transaction = vm
+            .execute(
+                &caller_private_key,
+                ("credits.aleo", "split"),
+                inputs,
+                None,
+                0,
+                None::<Query<CurrentNetwork, <LedgerType as ConsensusStorage<_>>::BlockStorage>>,
+                rng,
+            )
+            .unwrap();
 
         // Ensure the transaction is a split transition.
         assert_eq!(transaction.transitions().count(), 1);
@@ -836,7 +965,16 @@ finalize test:
         .unwrap();
 
         // Deploy the program.
-        let transaction = vm.deploy(&caller_private_key, &child_program, None, 0, None, rng).unwrap();
+        let transaction = vm
+            .deploy(
+                &caller_private_key,
+                &child_program,
+                None,
+                0,
+                None::<Query<CurrentNetwork, <LedgerType as ConsensusStorage<_>>::BlockStorage>>,
+                rng,
+            )
+            .unwrap();
 
         // Construct the next block.
         let next_block = crate::test_helpers::sample_next_block(&vm, &caller_private_key, &[transaction], rng).unwrap();
@@ -905,7 +1043,16 @@ finalize test:
         .unwrap();
 
         // Deploy the program.
-        let transaction = vm.deploy(&caller_private_key, &parent_program, None, 0, None, rng).unwrap();
+        let transaction = vm
+            .deploy(
+                &caller_private_key,
+                &parent_program,
+                None,
+                0,
+                None::<Query<CurrentNetwork, <LedgerType as ConsensusStorage<_>>::BlockStorage>>,
+                rng,
+            )
+            .unwrap();
 
         // Construct the next block.
         let next_block = crate::test_helpers::sample_next_block(&vm, &caller_private_key, &[transaction], rng).unwrap();
@@ -915,7 +1062,15 @@ finalize test:
 
         // Execute the parent program.
         let Transaction::Execute(_, _, execution, _) = vm
-            .execute(&caller_private_key, ("parent.aleo", "test"), Vec::<Value<_>>::new().iter(), None, 0, None, rng)
+            .execute(
+                &caller_private_key,
+                ("parent.aleo", "test"),
+                Vec::<Value<_>>::new().iter(),
+                None,
+                0,
+                None::<Query<CurrentNetwork, <LedgerType as ConsensusStorage<_>>::BlockStorage>>,
+                rng,
+            )
             .unwrap()
         else {
             unreachable!("VM::execute always produces an `Execution`")
@@ -993,7 +1148,16 @@ finalize test:
         .unwrap();
 
         // Deploy the program.
-        let transaction = vm.deploy(&caller_private_key, &base_program, None, 0, None, rng).unwrap();
+        let transaction = vm
+            .deploy(
+                &caller_private_key,
+                &base_program,
+                None,
+                0,
+                None::<Query<CurrentNetwork, <LedgerType as ConsensusStorage<_>>::BlockStorage>>,
+                rng,
+            )
+            .unwrap();
 
         // Construct the next block.
         let next_block = crate::test_helpers::sample_next_block(&vm, &caller_private_key, &[transaction], rng).unwrap();
@@ -1032,7 +1196,16 @@ finalize test:
             .unwrap();
 
             // Deploy the program.
-            let transaction = vm.deploy(&caller_private_key, &program, None, 0, None, rng).unwrap();
+            let transaction = vm
+                .deploy(
+                    &caller_private_key,
+                    &program,
+                    None,
+                    0,
+                    None::<Query<CurrentNetwork, <LedgerType as ConsensusStorage<_>>::BlockStorage>>,
+                    rng,
+                )
+                .unwrap();
 
             // Construct the next block.
             let next_block =
@@ -1050,7 +1223,7 @@ finalize test:
                 vec![Value::from_str("0field").unwrap(), Value::from_str("1field").unwrap()].iter(),
                 None,
                 0,
-                None,
+                None::<Query<CurrentNetwork, <LedgerType as ConsensusStorage<_>>::BlockStorage>>,
                 rng,
             )
             .unwrap()
