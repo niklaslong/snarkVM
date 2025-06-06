@@ -13,7 +13,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use std::sync::LazyLock;
+
+use rayon::{ThreadPool, ThreadPoolBuilder};
+
 use crate::{boxed::Box, vec::Vec};
+
+static PROOF_POOL: LazyLock<ThreadPool> = LazyLock::new(|| {
+    ThreadPoolBuilder::new().num_threads(num_cpus::get() * 3 / 4).build().expect("build global proof pool")
+});
 
 pub struct ExecutionPool<'a, T> {
     jobs: Vec<Box<dyn 'a + FnOnce() -> T + Send>>,
@@ -39,7 +47,8 @@ impl<'a, T> ExecutionPool<'a, T> {
         #[cfg(not(feature = "serial"))]
         {
             use rayon::prelude::*;
-            execute_with_max_available_threads(|| self.jobs.into_par_iter().map(|f| f()).collect())
+            PROOF_POOL.install(|| self.jobs.into_par_iter().map(|f| f()).collect())
+            // execute_with_max_available_threads(|| self.jobs.into_par_iter().map(|f| f()).collect())
         }
         #[cfg(feature = "serial")]
         {
