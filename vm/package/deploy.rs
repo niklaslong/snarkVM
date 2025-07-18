@@ -137,14 +137,14 @@ impl<N: Network> Package<N> {
             // Open the Aleo program file.
             let import_program_file = AleoFile::open(&imports_directory, program_id, false)?;
             // Add the import program.
-            process.add_program(import_program_file.program())?;
+            process.add_program(import_program_file.program(), None)?;
             Ok::<_, Error>(())
         })?;
 
         // Initialize the RNG.
         let rng = &mut rand::thread_rng();
         // Compute the deployment.
-        let deployment = process.deploy::<A, _>(program, rng).unwrap();
+        let deployment = process.deploy::<A, _>(program, None, rng).unwrap();
 
         match endpoint {
             Some(ref endpoint) => {

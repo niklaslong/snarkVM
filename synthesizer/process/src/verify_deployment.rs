@@ -42,7 +42,7 @@ impl<N: Network> Process<N> {
         }
 
         // Ensure the program is well-formed, by computing the stack.
-        let stack = Stack::new(self, deployment.program())?;
+        let stack = Stack::new(self, deployment.program(), None)?;
         lap!(timer, "Compute the stack");
 
         // Ensure the verifying keys are well-formed and the certificates are valid.

@@ -83,7 +83,7 @@ pub struct Process<N: Network> {
     /// The universal SRS.
     universal_srs: UniversalSRS<N>,
     /// The mapping of program IDs to stacks.
-    stacks: Arc<RwLock<IndexMap<ProgramID<N>, Arc<Stack<N>>>>>,
+    pub stacks: Arc<RwLock<IndexMap<ProgramID<N>, Arc<Stack<N>>>>>,
     /// The mapping of program IDs to old stacks.
     old_stacks: Arc<RwLock<IndexMap<ProgramID<N>, Option<Arc<Stack<N>>>>>>,
 }
@@ -104,7 +104,7 @@ impl<N: Network> Process<N> {
         lap!(timer, "Load credits program");
 
         // Compute the 'credits.aleo' program stack.
-        let stack = Stack::new(&process, &program)?;
+        let stack = Stack::new(&process, &program, None)?;
         lap!(timer, "Initialize stack");
 
         // Synthesize the 'credits.aleo' circuit keys.
@@ -126,12 +126,12 @@ impl<N: Network> Process<N> {
     /// If the program exists, then the existing program is replaced and discarded.
     /// If you intend to `execute` the program, use `deploy` and `finalize_deployment` instead.
     #[inline]
-    pub fn add_program(&mut self, program: &Program<N>) -> Result<Option<Arc<Stack<N>>>> {
+    pub fn add_program(&mut self, program: &Program<N>, edition: Option<u16>) -> Result<Option<Arc<Stack<N>>>> {
         // Initialize the 'credits.aleo' program ID.
         let credits_program_id = ProgramID::<N>::from_str("credits.aleo")?;
         // If the program is not 'credits.aleo', compute the program stack, and add it to the process.
         if program.id() != &credits_program_id {
-            return Ok(self.add_stack(Stack::new(self, program)?));
+            return Ok(self.add_stack(Stack::new(self, program, edition)?));
         }
         Ok(None)
     }
@@ -209,7 +209,7 @@ impl<N: Network> Process<N> {
         lap!(timer, "Load credits program");
 
         // Compute the 'credits.aleo' program stack.
-        let stack = Stack::new(&process, &program)?;
+        let stack = Stack::new(&process, &program, None)?;
         lap!(timer, "Initialize stack");
 
         // Synthesize the 'credits.aleo' verifying keys.
@@ -249,7 +249,7 @@ impl<N: Network> Process<N> {
         lap!(timer, "Load credits program");
 
         // Compute the 'credits.aleo' program stack.
-        let stack = Stack::new(&process, &program)?;
+        let stack = Stack::new(&process, &program, None)?;
         lap!(timer, "Initialize stack");
 
         // Synthesize the 'credits.aleo' verifying keys.
@@ -286,7 +286,7 @@ impl<N: Network> Process<N> {
         let program = Program::credits()?;
 
         // Compute the 'credits.aleo' program stack.
-        let stack = Stack::new(&process, &program)?;
+        let stack = Stack::new(&process, &program, None)?;
 
         // Add the stack to the process.
         process.add_stack(stack);
@@ -430,7 +430,7 @@ pub mod test_helpers {
 
         // Add the program to the process if doesn't yet exist.
         if !process.contains_program(program.id()) {
-            process.add_program(program).unwrap();
+            process.add_program(program, None).unwrap();
         }
 
         // Compute the authorization.
@@ -565,7 +565,7 @@ function compute:
         // Construct a new process.
         let mut process = Process::load().unwrap();
         // Add the program to the process.
-        process.add_program(program).unwrap();
+        process.add_program(program, None).unwrap();
         // Return the process.
         process
     }

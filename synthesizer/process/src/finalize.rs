@@ -32,10 +32,11 @@ impl<N: Network> Process<N> {
         deployment: &Deployment<N>,
         fee: &Fee<N>,
     ) -> Result<(Stack<N>, Vec<FinalizeOperation<N>>)> {
+        println!("FINALIZE DEPLOYMENT CALLED");
         let timer = timer!("Process::finalize_deployment");
 
         // Compute the program stack.
-        let stack = Stack::new(self, deployment.program())?;
+        let stack = Stack::new(self, deployment.program(), None)?;
         lap!(timer, "Compute the stack");
 
         // Insert the verifying keys.

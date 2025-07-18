@@ -216,7 +216,7 @@ function compute:
                 // Construct the process.
                 let process = Process::load().unwrap();
                 // Compute the deployment.
-                let deployment = process.deploy::<CurrentAleo, _>(&program, rng).unwrap();
+                let deployment = process.deploy::<CurrentAleo, _>(&program, None, rng).unwrap();
                 // Create a new deployment with the desired edition.
                 let deployment = Deployment::<CurrentNetwork>::new(
                     edition,

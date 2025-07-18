@@ -136,7 +136,7 @@ function do:
     )
     .unwrap();
     // Create the stack.
-    let stack = Stack::new(&process, &program).unwrap();
+    let stack = Stack::new(&process, &program, None).unwrap();
 
     // Declare the function name.
     let function_name = Identifier::from_str("do").unwrap();

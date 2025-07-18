@@ -21,12 +21,13 @@ impl<N: Network> Process<N> {
     pub fn deploy<A: circuit::Aleo<Network = N>, R: Rng + CryptoRng>(
         &self,
         program: &Program<N>,
+        edition: Option<u16>,
         rng: &mut R,
     ) -> Result<Deployment<N>> {
         let timer = timer!("Process::deploy");
 
         // Compute the stack.
-        let stack = Stack::new(self, program)?;
+        let stack = Stack::new(self, program, edition)?;
         lap!(timer, "Compute the stack");
 
         // Return the deployment.
@@ -45,7 +46,7 @@ impl<N: Network> Process<N> {
         let timer = timer!("Process::load_deployment");
 
         // Compute the program stack.
-        let stack = Stack::new(self, deployment.program())?;
+        let stack = Stack::new(self, deployment.program(), None)?;
         lap!(timer, "Compute the stack");
 
         // Insert the verifying keys.

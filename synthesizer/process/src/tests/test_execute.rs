@@ -1170,7 +1170,7 @@ function transfer:
     assert!(string.is_empty(), "Parser did not consume all of the string: '{string}'");
 
     // Add the program to the process.
-    process.add_program(&program1).unwrap();
+    process.add_program(&program1, None).unwrap();
 
     // Initialize the RNG.
     let rng = &mut TestRng::default();
@@ -1935,7 +1935,7 @@ function b:
     assert!(string.is_empty(), "Parser did not consume all of the string: '{string}'");
 
     // Add the program to the process.
-    process.add_program(&program1).unwrap();
+    process.add_program(&program1, None).unwrap();
 
     // Initialize another program.
     let (string, program2) = Program::<CurrentNetwork>::parse(
@@ -1954,7 +1954,7 @@ function a:
     assert!(string.is_empty(), "Parser did not consume all of the string: '{string}'");
 
     // Add the program to the process.
-    process.add_program(&program2).unwrap();
+    process.add_program(&program2, None).unwrap();
 
     // Initialize the RNG.
     let rng = &mut TestRng::default();
@@ -2071,7 +2071,7 @@ fn test_complex_execution_order() {
     assert!(string.is_empty(), "Parser did not consume all of the string: '{string}'");
 
     // Add the program to the process.
-    process.add_program(&program1).unwrap();
+    process.add_program(&program1, None).unwrap();
 
     // Initialize another program.
     let (string, program2) = Program::<CurrentNetwork>::parse(
@@ -2092,7 +2092,7 @@ fn test_complex_execution_order() {
     assert!(string.is_empty(), "Parser did not consume all of the string: '{string}'");
 
     // Add the program to the process.
-    process.add_program(&program2).unwrap();
+    process.add_program(&program2, None).unwrap();
 
     // Initialize another program.
     let (string, program3) = Program::<CurrentNetwork>::parse(
@@ -2115,7 +2115,7 @@ fn test_complex_execution_order() {
     assert!(string.is_empty(), "Parser did not consume all of the string: '{string}'");
 
     // Add the program to the process.
-    process.add_program(&program3).unwrap();
+    process.add_program(&program3, None).unwrap();
 
     // Initialize another program.
     let (string, program4) = Program::<CurrentNetwork>::parse(
@@ -2136,7 +2136,7 @@ fn test_complex_execution_order() {
     assert!(string.is_empty(), "Parser did not consume all of the string: '{string}'");
 
     // Add the program to the process.
-    process.add_program(&program4).unwrap();
+    process.add_program(&program4, None).unwrap();
 
     // Initialize the RNG.
     let rng = &mut TestRng::default();
@@ -2584,7 +2584,7 @@ fn test_long_import_chain() {
         ))
         .unwrap();
         // Add the program to the process.
-        process.add_program(&program).unwrap();
+        process.add_program(&program, None).unwrap();
     }
 
     // Add the `MAX_PROGRAM_DEPTH + 1` program to the process, which should fail.
@@ -2597,7 +2597,7 @@ fn test_long_import_chain() {
         MAX_PROGRAM_DEPTH + 1
     ))
     .unwrap();
-    let result = process.add_program(&program);
+    let result = process.add_program(&program, None);
     // Programs may create long import chains as long as number of calls does not exceed the maximum number of transitions.
     assert!(result.is_ok());
 }
@@ -2631,7 +2631,7 @@ fn test_long_import_chain_with_calls() {
         ))
         .unwrap();
         // Add the program to the process.
-        process.add_program(&program).unwrap();
+        process.add_program(&program, None).unwrap();
         // Check that the number of calls is correct.
         let stack = process.get_stack(program.id()).unwrap();
         let number_of_calls = stack.get_number_of_calls(program.functions().into_iter().next().unwrap().0).unwrap();
@@ -2650,7 +2650,7 @@ fn test_long_import_chain_with_calls() {
         Transaction::<CurrentNetwork>::MAX_TRANSITIONS - 2
     ))
     .unwrap();
-    let result = process.add_program(&program);
+    let result = process.add_program(&program, None);
     assert!(result.is_err())
 }
 
@@ -2665,7 +2665,7 @@ fn test_max_imports() {
         // Initialize a new program.
         let program = Program::from_str(&format!("program test{i}.aleo; function c:")).unwrap();
         // Add the program to the process.
-        process.add_program(&program).unwrap();
+        process.add_program(&program, None).unwrap();
     }
 
     // Add a program importing all `MAX_IMPORTS` programs, which should pass.
@@ -2674,7 +2674,7 @@ fn test_max_imports() {
     let program =
         Program::from_str(&format!("{import_string}program test{}.aleo; function c:", CurrentNetwork::MAX_IMPORTS))
             .unwrap();
-    process.add_program(&program).unwrap();
+    process.add_program(&program, None).unwrap();
 
     // Attempt to construct a program importing `MAX_IMPORTS + 1` programs, which should fail.
     let import_string =
@@ -2711,10 +2711,10 @@ fn test_program_exceeding_transaction_spend_limit() {
     let mut process = Process::<CurrentNetwork>::load().unwrap();
 
     // Attempt to add the program to the process, which should fail.
-    let result = process.add_program(&program);
+    let result = process.add_program(&program, None);
     assert!(result.is_err());
 
     // Attempt to initialize a `Stack` directly with the program, which should fail.
-    let result = Stack::initialize(&process, &program);
+    let result = Stack::initialize(&process, &program, None);
     assert!(result.is_err());
 }

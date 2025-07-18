@@ -210,7 +210,7 @@ pub struct Stack<N: Network> {
 impl<N: Network> Stack<N> {
     /// Initializes a new stack, if it does not already exist, given the process and the program.
     #[inline]
-    pub fn new(process: &Process<N>, program: &Program<N>) -> Result<Self> {
+    pub fn new(process: &Process<N>, program: &Program<N>, edition: Option<u16>) -> Result<Self> {
         // Retrieve the program ID.
         let program_id = program.id();
         // Ensure the program contains functions.
@@ -237,7 +237,7 @@ impl<N: Network> Stack<N> {
         ensure!(program == &Program::from_str(&program_string)?, "Program string serialization failed");
 
         // Return the stack.
-        Stack::initialize(process, program)
+        Stack::initialize(process, program, edition)
     }
 }
 

@@ -413,7 +413,7 @@ impl<N: Network, C: ConsensusStorage<N>> Ledger<N, C> {
         let fee_record = Some(records.next().unwrap().clone());
 
         // Create a new deploy transaction.
-        self.vm.deploy(private_key, program, fee_record, priority_fee_in_microcredits, query, rng)
+        self.vm.deploy(private_key, program, None, fee_record, priority_fee_in_microcredits, query, rng)
     }
 
     /// Creates a transfer transaction.

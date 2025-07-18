@@ -162,7 +162,7 @@ function compute:
             // Construct the process.
             let process = Process::load().unwrap();
             // Compute the deployment.
-            let deployment = process.deploy::<CurrentAleo, _>(&program, rng).unwrap();
+            let deployment = process.deploy::<CurrentAleo, _>(&program, None, rng).unwrap();
             // Return the deployment.
             // Note: This is a testing-only hack to adhere to Rust's dependency cycle rules.
             Deployment::from_str(&deployment.to_string()).unwrap()
@@ -419,7 +419,7 @@ pub fn sample_large_execution_transaction(rng: &mut TestRng) -> Transaction<Curr
             // Construct the process.
             let mut process = synthesizer_process::Process::load().unwrap();
             // Add the program.
-            process.add_program(&program).unwrap();
+            process.add_program(&program, None).unwrap();
 
             // Initialize a private key.
             let private_key = PrivateKey::new(rng).unwrap();

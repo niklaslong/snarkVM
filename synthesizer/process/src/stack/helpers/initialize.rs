@@ -18,14 +18,16 @@ use super::*;
 impl<N: Network> Stack<N> {
     /// Initializes a new stack, given the process and program.
     #[inline]
-    pub(crate) fn initialize(process: &Process<N>, program: &Program<N>) -> Result<Self> {
+    pub(crate) fn initialize(process: &Process<N>, program: &Program<N>, edition: Option<u16>) -> Result<Self> {
         // Compute the appropriate edition for the stack.
-        let edition = match process.contains_program(program.id()) {
+        let edition = match (edition, process.contains_program(program.id())) {
+            // If an edition was provided, use it.
+            (Some(edition), _) => edition,
             // If the program does not exist in the process, use edition zero.
-            false => 0u16,
+            (None, false) => 0u16,
             // If the new program matches the existing program, use the existing edition.
             // Otherwise, increment the edition.
-            true => {
+            (None, true) => {
                 // Retrieve the stack for the program.
                 let stack = process.get_stack(program.id())?;
                 // Retrieve the program edition.
