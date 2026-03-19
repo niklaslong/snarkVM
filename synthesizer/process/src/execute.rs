@@ -63,6 +63,21 @@ impl<N: Network> Process<N> {
         finish!(timer);
         Ok((response, trace))
     }
+
+    /// Executes the given authorization, returning the response, trace, and transition view key.
+    #[inline]
+    pub fn execute_with_tvk<A: circuit::Aleo<Network = N>, R: CryptoRng + Rng>(
+        &self,
+        authorization: Authorization<N>,
+        rng: &mut R,
+    ) -> Result<(Response<N>, Trace<N>, Field<N>), ProcessExecError> {
+        // Retrieve the main request's TVK (without popping it).
+        let tvk = *authorization.peek_next()?.tvk();
+        // Execute the authorization.
+        let (response, trace) = self.execute::<A, R>(authorization, rng)?;
+        // Return the response, trace, and TVK.
+        Ok((response, trace, tvk))
+    }
 }
 
 #[cfg(test)]
