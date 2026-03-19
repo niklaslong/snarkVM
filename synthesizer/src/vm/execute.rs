@@ -48,6 +48,73 @@ impl<N: Network, C: ConsensusStorage<N>> VM<N, C> {
         Ok(execution)
     }
 
+    /// Returns a new execute transaction and the transition view key.
+    ///
+    /// If a `fee_record` is provided, then a private fee will be included in the transaction;
+    /// otherwise, a public fee will be included in the transaction.
+    ///
+    /// The `priority_fee_in_microcredits` is an additional fee **on top** of the execution fee.
+    pub fn execute_with_tvk<R: Rng + CryptoRng>(
+        &self,
+        private_key: &PrivateKey<N>,
+        (program_id, function_name): (impl TryInto<ProgramID<N>>, impl TryInto<Identifier<N>>),
+        inputs: impl ExactSizeIterator<Item = impl TryInto<Value<N>>>,
+        fee_record: Option<Record<N, Plaintext<N>>>,
+        priority_fee_in_microcredits: u64,
+        query: Option<&dyn QueryTrait<N>>,
+        rng: &mut R,
+    ) -> Result<(Transaction<N>, Field<N>), VmExecError> {
+        // Get a default query if one is not provided.
+        let query = match query {
+            Some(q) => q,
+            None => &Query::VM(self.block_store().clone()),
+        };
+        // Compute the authorization.
+        let authorization = self.authorize(private_key, program_id, function_name, inputs, rng)?;
+        // Retrieve the main request's TVK (without popping it).
+        let tvk = *authorization.peek_next()?.tvk();
+        // Determine if a fee is required.
+        let is_fee_required = !(authorization.is_split() || authorization.is_upgrade());
+        // Determine if a priority fee is declared.
+        let is_priority_fee_declared = priority_fee_in_microcredits > 0;
+        // Compute the execution.
+        let (execution, _response) = self.execute_authorization_raw(authorization, query, rng)?;
+        // Compute the fee.
+        let fee = match is_fee_required || is_priority_fee_declared {
+            true => {
+                // Compute the minimum execution cost.
+                let consensus_version = N::CONSENSUS_VERSION(query.current_block_height()?)?;
+                let (minimum_execution_cost, _) =
+                    execution_cost(&self.process().read(), &execution, consensus_version)?;
+                // Compute the execution ID.
+                let execution_id = execution.to_execution_id()?;
+                // Authorize the fee.
+                let authorization = match fee_record {
+                    Some(record) => self.authorize_fee_private(
+                        private_key,
+                        record,
+                        minimum_execution_cost,
+                        priority_fee_in_microcredits,
+                        execution_id,
+                        rng,
+                    )?,
+                    None => self.authorize_fee_public(
+                        private_key,
+                        minimum_execution_cost,
+                        priority_fee_in_microcredits,
+                        execution_id,
+                        rng,
+                    )?,
+                };
+                // Execute the fee.
+                Some(self.execute_fee_authorization_raw(authorization, query, rng)?)
+            }
+            false => None,
+        };
+        // Return the execute transaction and TVK.
+        Ok((Transaction::from_execution(execution, fee)?, tvk))
+    }
+
     /// Returns a new execute transaction and response.
     ///
     /// If a `fee_record` is provided, then a private fee will be included in the transaction;
