@@ -620,46 +620,53 @@ impl<N: Network, C: ConsensusStorage<N>> Drop for VM<N, C> {
     }
 }
 
-#[cfg(test)]
+#[cfg(any(test, feature = "test"))]
 pub(crate) mod test_helpers {
     use super::*;
     use circuit::AleoV0;
+    #[cfg(test)]
+    use console::program::Entry;
     use console::{
         account::{Address, ViewKey},
         network::MainnetV0,
-        program::{Entry, Value},
+        program::Value,
         types::Field,
     };
-    use snarkvm_ledger_block::{Block, Header, Input, Metadata, Transition};
+    #[cfg(test)]
+    use snarkvm_ledger_block::Input;
+    use snarkvm_ledger_block::{Block, Header, Metadata, Transition};
+    #[cfg(test)]
     use snarkvm_ledger_test_helpers::{large_transaction_program, small_transaction_program};
     use snarkvm_synthesizer_program::Program;
 
     use aleo_std::StorageMode;
     use indexmap::IndexMap;
+    #[cfg(test)]
     use serde_json::json;
+    #[cfg(test)]
     use snarkvm_synthesizer_snark::{Proof, VerifyingKey};
     use std::sync::OnceLock;
 
-    pub(crate) type CurrentNetwork = MainnetV0;
-    pub(crate) type CurrentAleo = AleoV0;
+    pub type CurrentNetwork = MainnetV0;
+    pub type CurrentAleo = AleoV0;
 
     #[cfg(not(feature = "rocks"))]
-    pub(crate) type LedgerType = snarkvm_ledger_store::helpers::memory::ConsensusMemory<CurrentNetwork>;
+    pub type LedgerType = snarkvm_ledger_store::helpers::memory::ConsensusMemory<CurrentNetwork>;
     #[cfg(feature = "rocks")]
-    pub(crate) type LedgerType = snarkvm_ledger_store::helpers::rocksdb::ConsensusDB<CurrentNetwork>;
+    pub type LedgerType = snarkvm_ledger_store::helpers::rocksdb::ConsensusDB<CurrentNetwork>;
 
     /// Samples a new finalize state.
-    pub(crate) fn sample_finalize_state(block_height: u32) -> FinalizeGlobalState {
+    pub fn sample_finalize_state(block_height: u32) -> FinalizeGlobalState {
         FinalizeGlobalState::from(block_height as u64, block_height, None, [0u8; 32])
     }
 
-    pub(crate) fn sample_vm() -> VM<CurrentNetwork, LedgerType> {
+    pub fn sample_vm() -> VM<CurrentNetwork, LedgerType> {
         // Initialize a new VM.
         VM::from(ConsensusStore::open(StorageMode::new_test(None)).unwrap()).unwrap()
     }
 
     #[cfg(feature = "test")]
-    pub(crate) fn sample_vm_at_height(height: u32, rng: &mut TestRng) -> VM<CurrentNetwork, LedgerType> {
+    pub fn sample_vm_at_height(height: u32, rng: &mut TestRng) -> VM<CurrentNetwork, LedgerType> {
         // Initialize the VM with a genesis block.
         let mut vm = sample_vm_with_genesis_block(rng);
         // Get the genesis private key.
@@ -671,7 +678,7 @@ pub(crate) mod test_helpers {
     }
 
     #[cfg(feature = "test")]
-    pub(crate) fn advance_vm_to_height(
+    pub fn advance_vm_to_height(
         vm: &mut VM<CurrentNetwork, LedgerType>,
         genesis_private_key: PrivateKey<CurrentNetwork>,
         height: u32,
@@ -684,7 +691,7 @@ pub(crate) mod test_helpers {
         }
     }
 
-    pub(crate) fn sample_genesis_private_key(rng: &mut TestRng) -> PrivateKey<CurrentNetwork> {
+    pub fn sample_genesis_private_key(rng: &mut TestRng) -> PrivateKey<CurrentNetwork> {
         static INSTANCE: OnceLock<PrivateKey<CurrentNetwork>> = OnceLock::new();
         *INSTANCE.get_or_init(|| {
             // Initialize a new caller.
@@ -692,7 +699,7 @@ pub(crate) mod test_helpers {
         })
     }
 
-    pub(crate) fn sample_genesis_block(rng: &mut TestRng) -> Block<CurrentNetwork> {
+    pub fn sample_genesis_block(rng: &mut TestRng) -> Block<CurrentNetwork> {
         static INSTANCE: OnceLock<Block<CurrentNetwork>> = OnceLock::new();
         INSTANCE
             .get_or_init(|| {
@@ -706,7 +713,7 @@ pub(crate) mod test_helpers {
             .clone()
     }
 
-    pub(crate) fn sample_vm_with_genesis_block(rng: &mut TestRng) -> VM<CurrentNetwork, LedgerType> {
+    pub fn sample_vm_with_genesis_block(rng: &mut TestRng) -> VM<CurrentNetwork, LedgerType> {
         // Initialize the VM.
         let vm = crate::vm::test_helpers::sample_vm();
         // Initialize the genesis block.
@@ -717,7 +724,7 @@ pub(crate) mod test_helpers {
         vm
     }
 
-    pub(crate) fn sample_program() -> Program<CurrentNetwork> {
+    pub fn sample_program() -> Program<CurrentNetwork> {
         static INSTANCE: OnceLock<Program<CurrentNetwork>> = OnceLock::new();
         INSTANCE
             .get_or_init(|| {
@@ -758,7 +765,7 @@ function compute:
             .clone()
     }
 
-    pub(crate) fn sample_deployment_transaction(rng: &mut TestRng) -> Transaction<CurrentNetwork> {
+    pub fn sample_deployment_transaction(rng: &mut TestRng) -> Transaction<CurrentNetwork> {
         static INSTANCE: OnceLock<Transaction<CurrentNetwork>> = OnceLock::new();
         INSTANCE
             .get_or_init(|| {
@@ -795,7 +802,7 @@ function compute:
             .clone()
     }
 
-    pub(crate) fn sample_execution_transaction_without_fee(rng: &mut TestRng) -> Transaction<CurrentNetwork> {
+    pub fn sample_execution_transaction_without_fee(rng: &mut TestRng) -> Transaction<CurrentNetwork> {
         static INSTANCE: OnceLock<Transaction<CurrentNetwork>> = OnceLock::new();
         INSTANCE
             .get_or_init(|| {
@@ -838,7 +845,7 @@ function compute:
             .clone()
     }
 
-    pub(crate) fn sample_execution_transaction_with_private_fee(rng: &mut TestRng) -> Transaction<CurrentNetwork> {
+    pub fn sample_execution_transaction_with_private_fee(rng: &mut TestRng) -> Transaction<CurrentNetwork> {
         static INSTANCE: OnceLock<Transaction<CurrentNetwork>> = OnceLock::new();
         INSTANCE
             .get_or_init(|| {
@@ -882,7 +889,7 @@ function compute:
             .clone()
     }
 
-    pub(crate) fn sample_execution_transaction_with_public_fee(rng: &mut TestRng) -> Transaction<CurrentNetwork> {
+    pub fn sample_execution_transaction_with_public_fee(rng: &mut TestRng) -> Transaction<CurrentNetwork> {
         static INSTANCE: OnceLock<Transaction<CurrentNetwork>> = OnceLock::new();
         INSTANCE
             .get_or_init(|| {

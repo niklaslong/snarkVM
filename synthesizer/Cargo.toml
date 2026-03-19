@@ -47,7 +47,7 @@ serial = [
   "snarkvm-synthesizer-snark/serial"
 ]
 setup = [ ]
-test = [ "snarkvm-console/test", "snarkvm-synthesizer-process/test" ]
+test = [ "aleo-std/storage", "snarkvm-console/test", "snarkvm-synthesizer-process/test" ]
 timer = [ "aleo-std/timer" ]
 wasm = [
   "snarkvm-console/wasm",

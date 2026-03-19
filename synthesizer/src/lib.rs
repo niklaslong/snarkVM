@@ -40,6 +40,12 @@ pub use restrictions::*;
 pub mod vm;
 pub use vm::*;
 
+/// Test helpers for the VM, available with the `test` feature.
+#[cfg(any(test, feature = "test"))]
+pub mod vm_test_helpers {
+    pub use crate::vm::test_helpers::*;
+}
+
 pub mod prelude {
     pub use crate::{
         process::*,
